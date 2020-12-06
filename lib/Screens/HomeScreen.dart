@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:math' as math;
-import '../Utils/Contants.dart';
+import '../Utils/Constants.dart';
+
+
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -9,24 +11,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: Constants.appName,
-      theme: Constants.lightTheme,
-      darkTheme: Constants.darkTheme,
-      home: HomeScreen(),
-    );
-  }
-}
-
-class MainScreen extends StatefulWidget {
-  @override
-  _MainScreenState createState() => _MainScreenState();
-}
-
-class _MainScreenState extends State<MainScreen> {
   PageController _pageController;
   int _page = 0;
   List navs = ["Trang chủ", "Cộng đồng", "Yêu thích"];
@@ -59,8 +43,20 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         title: const Text('BottomNavigationBar Sample'),
       ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+      body: Stack(
+        children: <Widget>[
+          SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(height: 8),
+                SlidingCardsView(),
+                SizedBox(height: 8),
+                
+              ],
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -117,15 +113,15 @@ class _SlidingCardsViewState extends State<SlidingCardsView> {
         controller: pageController,
         children: <Widget>[
           SlidingCard(
-            name: 'Shenzhen GLOBAL DESIGN AWARD 2018',
+            name: 'Tràng An, Việt Nam',
             date: '4.20-30',
-            assetName: 'steve-johnson.jpeg',
+            assetName: '01.jpg',
             offset: pageOffset,
           ),
           SlidingCard(
-            name: 'Dawan District, Guangdong Hong Kong and Macao',
+            name: 'Đà Lạt, Việt Nam',
             date: '4.28-31',
-            assetName: 'rodion-kutsaev.jpeg',
+            assetName: '02.jpg',
             offset: pageOffset - 1,
           ),
         ],
