@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Screens/AccountScreen.dart';
+import 'package:mobile/Screens/HomeScreen.dart';
 import 'package:mobile/Screens/LoginScreen.dart';
 
 import 'Utils/Constants.dart';
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(),
+      home: HomeScreen(),
     );
   }
 }
