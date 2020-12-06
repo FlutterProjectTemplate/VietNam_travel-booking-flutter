@@ -1,29 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Screens/AccountScreen.dart';
 
-import 'Utils/Contants.dart';
+import 'Utils/Constants.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(AccountScreen());
 }
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
+class MyApp extends StatelessWidget {
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
       debugShowCheckedModeBanner: false,
-      title: Constants.appName,
-      theme: Constants.lightTheme,
-      darkTheme: Constants.darkTheme,
-      home: AccountScreen(),
+      home: MainScreen(),
     );
   }
 }
+
+// class MyApp extends StatefulWidget {
+//   @override
+//   _MyAppState createState() => _MyAppState();
+// }
+//
+// class _MyAppState extends State<MyApp> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       title: Constants.appName,
+//       theme: Constants.lightTheme,
+//       darkTheme: Constants.darkTheme,
+//       home: MainScreen(),
+//     );
+//   }
+// }
 
 class MainScreen extends StatefulWidget {
   @override
@@ -35,7 +51,8 @@ class _MainScreenState extends State<MainScreen> {
   int _page = 0;
   List navs = ["Trang chủ", "Cộng đồng", "Yêu thích"];
   int _selectedIndex = 0;
-  static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  static const TextStyle optionStyle =
+      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
     Text(
       'Index 0: Home',
