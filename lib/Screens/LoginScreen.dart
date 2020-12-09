@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/BezierContainer.dart';
+import 'package:mobile/Components/CustomAppBar.dart';
+
 class LoginScreen extends StatefulWidget {
   LoginScreen();
 
@@ -8,56 +10,13 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  Widget _backButton() {
-    return InkWell(
-      onTap: (null),
-      child: Row(
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(left: 0, top: 10, bottom: 10),
-            child: Icon(Icons.keyboard_arrow_left, color: Colors.black),
-          ),
-          Text('Back',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500))
-        ],
-      ),
-    );
-  }
-
-  Widget _entryField(String title, {bool isPassword = false}) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            title,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          TextField(
-              obscureText: isPassword,
-              decoration: InputDecoration(
-                  border: InputBorder.none,
-                  fillColor: Color(0xfff3f3f4),
-                  filled: true))
-        ],
-      ),
-    );
-  }
-
   Widget _submitButton() {
     return Container(
-      width: MediaQuery
-          .of(context)
-          .size
-          .width,
+      width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.symmetric(vertical: 15),
       alignment: Alignment.center,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
+          borderRadius: BorderRadius.all(Radius.circular(25)),
           boxShadow: <BoxShadow>[
             BoxShadow(
                 color: Colors.grey.shade200,
@@ -70,8 +29,24 @@ class _LoginScreenState extends State<LoginScreen> {
               end: Alignment.centerRight,
               colors: [Color(0xfffbb448), Color(0xfff7892b)])),
       child: Text(
-        'Login',
+        'Đăng nhập',
         style: TextStyle(fontSize: 20, color: Colors.white),
+      ),
+    );
+  }
+
+  Widget _forgotPasswordLabel() {
+    return InkWell(
+      onTap: () {
+        // Navigator.push(
+        //     context, MaterialPageRoute(builder: (context) => SignUpPage()));
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 10),
+        alignment: Alignment.centerRight,
+        child: Text('Bạn quên mật khẩu ?',
+            style: TextStyle(
+                fontSize: 14, fontWeight: FontWeight.w500)),
       ),
     );
   }
@@ -81,7 +56,6 @@ class _LoginScreenState extends State<LoginScreen> {
       onTap: () {
         // Navigator.push(
         //     context, MaterialPageRoute(builder: (context) => SignUpPage()));
-
       },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 20),
@@ -91,14 +65,14 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Don\'t have an account ?',
+              'Bạn chưa có tài khoản ?',
               style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
             ),
             SizedBox(
               width: 10,
             ),
             Text(
-              'Register',
+              'Đăng ký',
               style: TextStyle(
                   color: Color(0xfff79c4f),
                   fontSize: 13,
@@ -110,34 +84,92 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _emailPasswordWidget() {
+  Widget _entryField(String title, {bool isPassword=false}){
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        _entryField("Email id"),
-        _entryField("Password", isPassword: true),
+        Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: Text(
+            title,
+            style: TextStyle(color: Colors.grey, fontSize: 16.0),
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.grey.withOpacity(0.5),
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
+          child: Row(
+            children: <Widget>[
+              new Padding(
+                padding:
+                EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                child: Icon(
+                  Icons.person_outline,
+                  color: Colors.grey,
+                ),
+              ),
+              Container(
+                height: 30.0,
+                width: 1.0,
+                color: Colors.grey.withOpacity(0.5),
+                margin: const EdgeInsets.only(left: 00.0, right: 10.0),
+              ),
+              new Expanded(
+                child: TextField(
+                  obscureText: isPassword,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: 'Nhập ${title}',
+                    hintStyle: TextStyle(color: Colors.grey),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
       ],
     );
   }
-  Widget _imageLogo(){
-    return Image.asset('images/logo.png');
+
+  Widget _widgetField() {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          _entryField("Email"),
+          _entryField("Mật khẩu", isPassword: true),
+        ],
+      ),
+    );
+  }
+
+  Widget _imageLogo() {
+    return Image.asset('images/logo.png', height: 150, fit: BoxFit.fill);
   }
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery
-        .of(context)
-        .size
-        .height;
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
+      appBar: CustomAppBar(
+        context,
+        "Đăng nhập",
+        true,
+      ),
       body: Container(
         height: height,
-        child:Stack(
+        child: Stack(
           children: <Widget>[
             Positioned(
-              top: -height*15,
-              right: -MediaQuery.of(context).size.width*0.4,
-                child: BezierContainer()
-            ),
+                top: -height * 15,
+                right: -MediaQuery.of(context).size.width * 0.4,
+                child: BezierContainer()),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: SingleChildScrollView(
@@ -145,22 +177,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    SizedBox(height: height * .2),
+                    SizedBox(height: 10),
                     _imageLogo(),
                     //_title(),
-
-                    SizedBox(height: 50),
-                    _emailPasswordWidget(),
+                    SizedBox(height: 10),
+                    _widgetField(),
                     SizedBox(height: 20),
                     _submitButton(),
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      alignment: Alignment.centerRight,
-                      child: Text('Forgot Password ?',
-                          style: TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w500)),
-                    ),
-                   // _divider(),
+                    SizedBox(height: 10),
+                    _forgotPasswordLabel(),
+                    // _divider(),
                     //_facebookButton(),
                     SizedBox(height: height * .055),
                     _createAccountLabel(),
@@ -168,7 +194,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-            Positioned(top: 40, left: 0, child: _backButton()),
           ],
         ),
       ),

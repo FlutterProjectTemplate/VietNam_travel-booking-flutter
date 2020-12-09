@@ -10,6 +10,21 @@ class Constants {
   static Color lightBG = Color(0xfffcfcff);
   static Color darkBG = Colors.black;
   static Color ratingBG = Colors.yellow[600];
+  static Color title=Colors.white;
+  static Color appBarBackground=Color(0xfff79c4f);
+  static BoxDecoration colorBoxDecoration=BoxDecoration(
+      borderRadius: BorderRadius.all(Radius.circular(5)),
+      boxShadow: <BoxShadow>[
+        BoxShadow(
+            color: Colors.grey.shade200,
+            offset: Offset(2, 4),
+            blurRadius: 5,
+            spreadRadius: 2)
+      ],
+      gradient: LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [Color(0xfffbb448), Color(0xfff7892b)]));
 
   static ThemeData lightTheme = ThemeData(
     backgroundColor: lightBG,
