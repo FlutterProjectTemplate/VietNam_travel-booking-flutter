@@ -101,16 +101,16 @@ class _LoginScreenState extends State<LoginScreen> {
               color: Colors.grey.withOpacity(0.5),
               width: 1.0,
             ),
-            borderRadius: BorderRadius.circular(20.0),
+            borderRadius: BorderRadius.circular(15.0),
           ),
-          margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
+          margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 0.0),
           child: Row(
             children: <Widget>[
               new Padding(
                 padding:
                 EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                 child: Icon(
-                  Icons.person_outline,
+                  (isPassword? Icons.security_outlined:Icons.person_outline),
                   color: Colors.grey,
                 ),
               ),

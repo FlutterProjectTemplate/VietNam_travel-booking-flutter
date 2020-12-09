@@ -13,7 +13,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Widget _entryField(String title,
       {bool isPassword = false,
-      bool isPhone = false,
+      bool isMail = false,
       bool isRePassword = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,15 +31,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
               color: Colors.grey.withOpacity(0.5),
               width: 1.0,
             ),
-            borderRadius: BorderRadius.circular(20.0),
+            borderRadius: BorderRadius.circular(15.0),
           ),
-          margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
+          margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 0.0),
           child: Row(
             children: <Widget>[
               new Padding(
                 padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                 child: Icon(
-                  Icons.person_outline,
+                  (isPassword||isRePassword?Icons.security_outlined:isMail?Icons.mail_outline:Icons.person_outline),
                   color: Colors.grey,
                 ),
               ),
@@ -53,7 +53,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: TextField(
                   obscureText: isPassword,
                   keyboardType:
-                      (isPhone ? TextInputType.number : TextInputType.text),
+                      TextInputType.text,
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText:
@@ -75,7 +75,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           _entryField("Họ tên"),
-          _entryField("Email", isPhone: true),
+          _entryField("Email", isMail: true),
           _entryField("Mật khẩu", isPassword: true),
           _entryField("Mật khẩu", isPassword: true, isRePassword: true),
         ],
