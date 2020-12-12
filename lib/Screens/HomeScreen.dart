@@ -5,7 +5,6 @@ import '../Utils/Constants.dart';
 
 import 'package:carousel_pro/carousel_pro.dart';
 
-
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -14,68 +13,41 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   PageController _pageController;
   int _page = 0;
-  List navs = ["Trang chủ", "Cộng đồng", "Yêu thích"];
-  int _selectedIndex = 0;
-  static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
+  static const TextStyle optionStyle =
+      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Container(
-          margin:EdgeInsets.symmetric(horizontal: 10.0, vertical:  8.0),
-          decoration: BoxDecoration(
-            color: Color.fromARGB(50, 255, 255, 255),
-            borderRadius: BorderRadius.all(Radius.circular(22.0)),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Expanded(
-                flex:1,
-
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    border:InputBorder.none,
-                    hintText: "Địa điểm muốn khám phá",
-                    hintStyle:TextStyle(color: Colors.white),
-                    icon: Icon(Icons.search, color: Colors.white),
-                  ),
-                )
-              ),
-              Expanded(
-                flex:0,
-                child: IconButton(
-                  onPressed: (){},
-                  icon:Icon(Icons.more_vert,color: Colors.white),
-                  padding: EdgeInsets.symmetric(horizontal: 5.0),
-                )
-              )
-            ],
-          )
-        ),
-        backgroundColor:Colors.orange,
-
+            margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+            decoration: BoxDecoration(
+              color: Color.fromARGB(50, 255, 255, 255),
+              borderRadius: BorderRadius.all(Radius.circular(22.0)),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                    flex: 1,
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "Địa điểm muốn khám phá",
+                        hintStyle: TextStyle(color: Colors.white),
+                        icon: Icon(Icons.search, color: Colors.white),
+                      ),
+                    )),
+                Expanded(
+                    flex: 0,
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.more_vert, color: Colors.white),
+                      padding: EdgeInsets.symmetric(horizontal: 5.0),
+                    ))
+              ],
+            )),
+        backgroundColor: Colors.orange,
       ),
 
       body: Stack(
@@ -86,58 +58,34 @@ class _HomeScreenState extends State<HomeScreen> {
               children: <Widget>[
                 Container(
                   height: 200,
-
                   child: ImageCarousel(),
                 ),
                 SizedBox(height: 10),
                 Align(
                   alignment: Alignment(-0.8, -0.5),
-                  child: new Text(
-                      "TOUR HOT",
-                      style:TextStyle(color: Colors.orange, fontSize: 20.0,fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.left
-                  ),
+                  child: new Text("TOUR HOT",
+                      style: TextStyle(
+                          color: Colors.orange,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.left),
                 ),
                 SizedBox(height: 8),
                 Container(
                   height: 400,
                   child: Align(
                     child: SlidingCardsView(),
-                    alignment:Alignment.center,
+                    alignment: Alignment.center,
                   ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.orangeAccent,
                   ),
-
-
                 ),
-
-
-
               ],
             ),
           ),
         ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: 'Business',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: 'School',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
       ),
     );
   }
@@ -210,7 +158,7 @@ class SlidingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     double gauss = math.exp(-(math.pow((offset.abs() - 0.5), 2) / 0.08));
     return Transform.translate(
-      offset: Offset(-32 * gauss * offset.sign,15),
+      offset: Offset(-32 * gauss * offset.sign, 15),
       child: Card(
         margin: EdgeInsets.only(left: 8, right: 8, bottom: 24),
         elevation: 8,
@@ -248,9 +196,9 @@ class CardContent extends StatelessWidget {
 
   const CardContent(
       {Key key,
-        @required this.name,
-        @required this.date,
-        @required this.offset})
+      @required this.name,
+      @required this.date,
+      @required this.offset})
       : super(key: key);
 
   @override
@@ -309,11 +257,13 @@ class CardContent extends StatelessWidget {
     );
   }
 }
+
 class ImageCarousel extends StatefulWidget {
   _ImageCarouselState createState() => new _ImageCarouselState();
 }
 
-class _ImageCarouselState extends State<ImageCarousel> with SingleTickerProviderStateMixin {
+class _ImageCarouselState extends State<ImageCarousel>
+    with SingleTickerProviderStateMixin {
   Animation<double> animation;
   AnimationController controller;
 
@@ -358,7 +308,7 @@ class _ImageCarouselState extends State<ImageCarousel> with SingleTickerProvider
           'Banner on top of carousel',
           style: TextStyle(
             fontFamily: 'fira',
-            fontSize: animation.value,//18.0,
+            fontSize: animation.value, //18.0,
             //color: Colors.white,
           ),
         ),
@@ -392,4 +342,3 @@ class _ImageCarouselState extends State<ImageCarousel> with SingleTickerProvider
     super.dispose();
   }
 }
-

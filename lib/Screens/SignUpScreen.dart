@@ -108,7 +108,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
   Widget _imageLogo() {
-    return Image.asset('images/user.png', height: 150, fit: BoxFit.fill);
+    return  Container(
+      width: 100,
+      height: 100,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        image: DecorationImage(
+            image: AssetImage("images/user.png"),
+            fit: BoxFit.fill),
+      ),
+    );
   }
   @override
   Widget build(BuildContext context) {

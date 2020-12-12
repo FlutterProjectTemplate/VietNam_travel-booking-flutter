@@ -8,5 +8,4 @@ class CommentScreen extends StatelessWidget{
     // TODO: implement build
     throw UnimplementedError();
   }
-
 }
