@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:mobile/Screens/AccountScreen.dart';
 import 'package:mobile/Screens/HomeScreen.dart';
 
+import 'TourListScreen.dart';
+
 class MainScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _MainScreenState();
@@ -14,50 +16,40 @@ class _MainScreenState extends State<MainScreen> {
   int _lastSelectedIndex = -1;
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-      if (_selectedIndex != _lastSelectedIndex) {
-        _navigatorKey.currentState.pushReplacementNamed("/${index}");
+    if (index != _lastSelectedIndex) {
+      setState(() {
+        _selectedIndex = index;
         _lastSelectedIndex = _selectedIndex;
-      }
-    });
+        // if (_selectedIndex != _lastSelectedIndex) {
+        //   _navigatorKey.currentState.pushReplacementNamed("/${index}");
+        //   _lastSelectedIndex = _selectedIndex;
+        // }
+      });
+    }
+  }
+
+  Widget _MyNavigator() {
+    Scaffold scaffold = new Scaffold();
+    switch (_selectedIndex) {
+      case 0:
+        return HomeScreen();
+        break;
+      case 1:
+        return AccountScreen();
+        case 2:
+        return TourListScreen();
+      case 3:
+        return AccountScreen();
+        break;
+      default:
+        return HomeScreen();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Navigator(
-        // key: _navigatorKey,
-        // initialRoute: '/0',
-        // onGenerateRoute: (RouteSettings settings) {
-        //   WidgetBuilder builder;
-        //
-        //   // Manage your route names here
-        //   switch (settings.name) {
-        //     case '/0':
-        //       builder = (BuildContext context) => HomeScreen();
-        //       break;
-        //     case '/1':
-        //       builder = (BuildContext context) => AccountScreen();
-        //       break;
-        //     case '/2':
-        //       builder = (BuildContext context) => HomeScreen();
-        //       break;
-        //     case '/3':
-        //       builder = (BuildContext context) => AccountScreen();
-        //       break;
-        //     default:
-        //       builder = (BuildContext context) => HomeScreen();
-        //   }
-        //   // _navigatorKey.currentState.pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
-        //   // You can also return a PageRouteBuilder and
-        //   // define custom transitions between pages
-        //   return MaterialPageRoute(
-        //     builder: builder,
-        //     settings: settings,
-        //   );
-        // },
-      ),
+      body: _MyNavigator(),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,

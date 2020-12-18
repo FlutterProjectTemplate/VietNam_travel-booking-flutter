@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/CustomAppBar.dart';
+import 'package:mobile/Screens/AboutScreen.dart';
+import 'package:mobile/Screens/LoginScreen.dart';
 import 'package:mobile/Utils/Constants.dart';
 
 class AccountScreen extends StatefulWidget {
@@ -54,7 +56,7 @@ class _MyAppState extends State<AccountScreen> {
                     SizedBox(
                       height: 10,
                     ),
-                    _submitButton()
+                    _loginButton()
                   ],
                 ),
               ),
@@ -69,7 +71,7 @@ class _MyAppState extends State<AccountScreen> {
         ),
         Container(
           width: MediaQuery.of(context).size.width,
-          margin: EdgeInsets.only(top: 220, right: 5, left: 5),
+          margin: EdgeInsets.only(top: 220, right: 5, left: 5,bottom: 5),
           padding: EdgeInsets.only(top: 20, left: 15, right: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
@@ -111,37 +113,54 @@ class _MyAppState extends State<AccountScreen> {
                 ],
               ),
               Divider(),
-              Row(
-                children: [
-                  Icon(Icons.phone),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Text(
-                    "Trung tâm hỗ trợ (24/7)",
-                    style: TextStyle(
-                        decoration: TextDecoration.none,
-                        color: Colors.black,
-                        fontSize: 16.0),
-                  ),
-                ],
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) => CustomDialog(
+                    ),
+                  );
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.phone),
+                    SizedBox(
+                      width: 15,
+                    ),
+
+                    Text(
+                      "Trung tâm hỗ trợ (24/7)",
+                      style: TextStyle(
+                          decoration: TextDecoration.none,
+                          color: Colors.black,
+                          fontSize: 16.0),
+                    ),
+                  ],
+                ),
               ),
+
               Divider(),
-              Row(
-                children: [
-                  Icon(Icons.info),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Text(
-                    "Về Travel",
-                    style: TextStyle(
-                        decoration: TextDecoration.none,
-                        color: Colors.black,
-                        fontSize: 16.0),
-                  ),
-                ],
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => (AboutScreen())));
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.info),
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Text(
+                      "Về Travel",
+                      style: TextStyle(
+                          decoration: TextDecoration.none,
+                          color: Colors.black,
+                          fontSize: 16.0),
+                    ),
+                  ],
+                ),
               ),
+
               Divider(),
             ],
           ),
@@ -149,20 +168,11 @@ class _MyAppState extends State<AccountScreen> {
       ],
     );
   }
-
-  Widget _submitButton() {
-
+  Widget _loginButton() {
     return GestureDetector(
-      onTap: (){
-        showDialog(
-          context: context,
-          builder: (BuildContext context) => CustomDialog(
-            title: "Success",
-            description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-            buttonText: "Okay",
-          ),
-        );
+
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginScreen(previousContext: context,)));
       },
       child: Container(
         width: MediaQuery.of(context).size.width / 4,
@@ -180,7 +190,9 @@ class _MyAppState extends State<AccountScreen> {
         child: Text(
           'Đăng nhập',
           style: TextStyle(
-              decoration: TextDecoration.none, fontSize: 12, color: Colors.white),
+              decoration: TextDecoration.none,
+              fontSize: 12,
+              color: Colors.white),
         ),
       ),
     );
@@ -188,15 +200,8 @@ class _MyAppState extends State<AccountScreen> {
 }
 
 class CustomDialog extends StatelessWidget {
-  final String title, description, buttonText;
-  final Image image;
 
-  CustomDialog({
-    @required this.title,
-    @required this.description,
-    @required this.buttonText,
-    this.image,
-  });
+  CustomDialog();
 
   @override
   Widget build(BuildContext context) {
@@ -239,7 +244,7 @@ class CustomDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min, // To make the card compact
             children: <Widget>[
               Text(
-              "",
+                "",
                 style: TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.w700,
@@ -262,7 +267,6 @@ class CustomDialog extends StatelessWidget {
                   child: Text("Gọi"),
                 ),
               ),
-
             ],
           ),
         ),

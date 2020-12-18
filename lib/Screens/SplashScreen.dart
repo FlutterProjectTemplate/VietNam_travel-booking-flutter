@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mobile/Screens/HomeScreen.dart';
 import 'package:mobile/Screens/MainScreen.dart';
+import 'package:mobile/Screens/TourBookingScreen.dart';
 import 'package:mobile/main.dart';
+
+import 'SearchScreen.dart';
 
 class SplashScreen extends StatefulWidget {
   @override

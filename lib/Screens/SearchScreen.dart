@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import '../Utils/Constants.dart';
 import 'dart:math';
 class SearchScreen extends StatefulWidget {
   @override

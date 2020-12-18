@@ -21,7 +21,8 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
             color: Constants.title,
             size: 40,
           ),
-        ));
+        )
+    );
   }
 
   @override
@@ -34,6 +35,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
     }
     return AppBar(
       centerTitle: true,
+
       leading: back,
       title: Text(
         title,
