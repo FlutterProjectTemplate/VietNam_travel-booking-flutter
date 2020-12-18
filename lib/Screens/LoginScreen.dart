@@ -1,36 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/BezierContainer.dart';
 import 'package:mobile/Components/CustomAppBar.dart';
+import 'package:mobile/Screens/MainScreen.dart';
+import 'package:mobile/Screens/SignUpScreen.dart';
+
+import 'ForgotPasswordScreen.dart';
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen();
+  final BuildContext previousContext;
+  LoginScreen({this.previousContext});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _LoginScreenState createState() => _LoginScreenState(this.previousContext);
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final BuildContext previousContext;
+
+  _LoginScreenState(this.previousContext);
+
   Widget _submitButton() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.symmetric(vertical: 15),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(25)),
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-                color: Colors.grey.shade200,
-                offset: Offset(2, 4),
-                blurRadius: 5,
-                spreadRadius: 2)
-          ],
-          gradient: LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: [Color(0xfffbb448), Color(0xfff7892b)])),
-      child: Text(
-        'Đăng nhập',
-        style: TextStyle(fontSize: 20, color: Colors.white),
+    return GestureDetector(
+      onTap: () {
+        Navigator.pop(previousContext);
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MainScreen()));
+      },
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.symmetric(vertical: 15),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(25)),
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                  color: Colors.grey.shade200,
+                  offset: Offset(2, 4),
+                  blurRadius: 5,
+                  spreadRadius: 2)
+            ],
+            gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [Color(0xfffbb448), Color(0xfff7892b)])),
+        child: Text(
+          'Đăng nhập',
+          style: TextStyle(fontSize: 20, color: Colors.white),
+        ),
       ),
     );
   }
@@ -38,53 +53,63 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _forgotPasswordLabel() {
     return InkWell(
       onTap: () {
-        // Navigator.push(
-        //     context, MaterialPageRoute(builder: (context) => SignUpPage()));
+
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => ForgotPasswordScreen()));
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.centerRight,
         child: Text('Bạn quên mật khẩu ?',
-            style: TextStyle(
-                fontSize: 14, fontWeight: FontWeight.w500)),
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
       ),
     );
   }
 
   Widget _createAccountLabel() {
     return InkWell(
-      onTap: () {
-        // Navigator.push(
-        //     context, MaterialPageRoute(builder: (context) => SignUpPage()));
-      },
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 20),
-        padding: EdgeInsets.all(15),
-        alignment: Alignment.bottomCenter,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Bạn chưa có tài khoản ?',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Text(
-              'Đăng ký',
-              style: TextStyle(
-                  color: Color(0xfff79c4f),
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600),
-            ),
-          ],
+        onTap: () {
+          // Navigator.push(
+          //     context, MaterialPageRoute(builder: (context) => SignUpPage()));
+        },
+        child: Container(
+          margin: EdgeInsets.symmetric(vertical: 20),
+          padding: EdgeInsets.all(15),
+          alignment: Alignment.bottomCenter,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'Bạn chưa có tài khoản ?',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              GestureDetector(
+                onTap: (){
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => SignUpScreen()));
+                },
+                child: Text(
+                  'Đăng ký',
+                  style: TextStyle(
+                      color: Color(0xfff79c4f),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600),
+                ),
+              ),
+
+            ],
+          ),
         ),
-      ),
+
     );
+
+
+
+
   }
 
-  Widget _entryField(String title, {bool isPassword=false}){
+  Widget _entryField(String title, {bool isPassword = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -107,10 +132,9 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Row(
             children: <Widget>[
               new Padding(
-                padding:
-                EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                 child: Icon(
-                  (isPassword? Icons.security_outlined:Icons.person_outline),
+                  (isPassword ? Icons.security_outlined : Icons.person_outline),
                   color: Colors.grey,
                 ),
               ),
