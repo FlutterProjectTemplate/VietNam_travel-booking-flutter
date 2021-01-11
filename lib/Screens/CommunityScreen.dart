@@ -1,4 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile/Screens/CommentScreen.dart';
+import 'package:mobile/Screens/SearchScreen.dart';
+
+import 'PostScreen.dart';
 
 class CommunityScreen extends StatefulWidget {
   @override
@@ -6,33 +11,6 @@ class CommunityScreen extends StatefulWidget {
 }
 
 class _CommunityScreenState extends State<CommunityScreen> {
-  PageController _pageController;
-  int _page = 0;
-  List navs = ["Trang chủ", "Cộng đồng", "Yêu thích"];
-  int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,6 +33,14 @@ class _CommunityScreenState extends State<CommunityScreen> {
                         hintStyle: TextStyle(color: Colors.white),
                         icon: Icon(Icons.search, color: Colors.white),
                       ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => SearchScreen(),
+                          ),
+                        );
+                      },
                     )),
                 Expanded(
                     flex: 0,
@@ -67,28 +53,33 @@ class _CommunityScreenState extends State<CommunityScreen> {
             )),
         backgroundColor: Colors.orange,
       ),
-      body: Stack(children: <Widget>[
-        PostMenu(),
-      ]),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+      body:
+        // decoration: BoxDecoration(
+        //   borderRadius: BorderRadius.circular(20),
+        //   color: Colors.white,
+        // ),
+        Column(children: <Widget>[
+          SafeArea(
+            child: PostMenu(),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: 'Business',
+          Expanded(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Expanded(
+                    child: SizedBox(
+                      height: 200.0,
+                      child:  ListView.builder(
+                          itemCount: 5,
+                          itemBuilder: (BuildContext context, int index) =>
+                              CardPost(),
+                       ),
+
+                    ),
+                  ),
+                ]),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: 'School',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
-      ),
+]),
     );
   }
 }
@@ -99,48 +90,142 @@ class CardPost extends StatelessWidget {
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
       child: Container(
-        height: 350.0,
+        width: double.infinity,
+        height: 560.0,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(25.0),
+        ),
         child: Column(
           children: <Widget>[
-            ListTile(
-              leading: CircleAvatar(),
-              title: Text("Investor Tactics Developer"),
-              subtitle: Text("Thứ năm lúc 21:39"),
-            ),
-            Expanded(
-              child: Container(
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                image: NetworkImage(
-                    "https://dulich9.com/wp-content/uploads/2019/05/bien-sam-son-9.jpg"),
-                fit: BoxFit.cover,
-              ))),
-            ),
-            SizedBox(height: 14.0),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 10.0),
+              child: Column(
                 children: <Widget>[
-                  Row(children: <Widget>[
-                    Icon(Icons.thumb_up, color: Colors.grey),
-                    SizedBox(width: 8.0),
-                    Text("Thích", style: TextStyle(color: Colors.grey))
-                  ]),
-                  Row(children: <Widget>[
-                    Icon(Icons.comment, color: Colors.grey),
-                    SizedBox(width: 8.0),
-                    Text("Bình luận", style: TextStyle(color: Colors.grey))
-                  ]),
-                  Row(children: <Widget>[
-                    Icon(Icons.share, color: Colors.grey),
-                    SizedBox(width: 8.0),
-                    Text("Chia sẻ", style: TextStyle(color: Colors.grey))
-                  ])
-                ]),
-            SizedBox(
-              height: 12.0,
-            )
+                  ListTile(
+                    leading: Container(
+                      width: 50.0,
+                      height: 50.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black45,
+                            offset: Offset(0, 2),
+                            blurRadius: 6.0,
+                          ),
+                        ],
+                      ),
+                      child: CircleAvatar(
+                        child: ClipOval(
+                          child: Image(
+                            height: 50.0,
+                            width: 50.0,
+                            image: AssetImage("images/04.jpg"),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+                    title: Text(
+                      "Tran Chung",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text("Thứ năm lúc 21:39"),
+                    trailing: IconButton(
+                      icon: Icon(Icons.more_horiz),
+                      color: Colors.black,
+                      onPressed: () => print('More'),
+                    ),
+                  ),
+                  InkWell(
+                    onDoubleTap: () => print('Like post'),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CommentScreen(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      margin: EdgeInsets.all(10.0),
+                      width: double.infinity,
+                      height: 400.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black45,
+                            offset: Offset(0, 5),
+                            blurRadius: 8.0,
+                          ),
+                        ],
+                        image: DecorationImage(
+                          image: AssetImage("images/03.jpg"),
+                          fit: BoxFit.fitWidth,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                IconButton(
+                                  icon: Icon(Icons.favorite_border),
+                                  iconSize: 30.0,
+                                  onPressed: () => print('Like post'),
+                                ),
+                                Text(
+                                  '2,515',
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(width: 20.0),
+                            Row(
+                              children: <Widget>[
+                                IconButton(
+                                  icon: Icon(Icons.chat),
+                                  iconSize: 30.0,
+                                  onPressed: () {},
+                                ),
+                                Text(
+                                  '350',
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.bookmark_border),
+                          iconSize: 30.0,
+                          onPressed: () => print('Save post'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -155,52 +240,67 @@ class PostMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+
       child: Container(
-        height: 100.0,
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              CircleAvatar(
-
-              ),
-              SizedBox(width: 20),
-              Container(
-                  width: 300,
-                  height: 40.0,
-                  child: GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Color(0xFFF05A22),
-                          style: BorderStyle.solid,
-                          width: 1.0,
-                        ),
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Center(
-
-                            child: Text(
-                              "Bạn đang nghĩ gì?",
-                              style: TextStyle(
-                                color: Color(0xFFF05A22),
-                                fontFamily: 'Montserrat',
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
+        padding: EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+            color: Colors.orange.withAlpha(200),
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(30.0),
+              bottomRight: Radius.circular(30.0),
+              topLeft: Radius.circular(30.0),
+              topRight: Radius.circular(30.0),
+            )),
+        child: Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    CircleAvatar(
+                      backgroundImage: AssetImage("images/04.jpg"),
                     ),
-                  ),
+                    SizedBox(width: 10.0),
+                    Text(
+                      "Xin chào",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
                 ),
-            ]),
+                IconButton(
+                  icon: Icon(
+                    Icons.notifications,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {},
+                )
+              ],
+            ),
+            SizedBox(height: 30.0),
+            TextField(
+              decoration: InputDecoration(
+                  hintText: "Bạn đang nghĩ gì",
+                  fillColor: Colors.white,
+                  filled: true,
+                  suffixIcon: Icon(Icons.filter_list),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0)),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => PostScreen(),
+                  ),
+                );
+              },
+            )
+          ],
+        ),
       ),
     );
   }

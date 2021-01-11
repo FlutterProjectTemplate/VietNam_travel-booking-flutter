@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:mobile/Screens/SearchScreen.dart';
 import 'dart:math' as math;
 import '../Utils/Constants.dart';
 
@@ -36,7 +37,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         hintText: "Địa điểm muốn khám phá",
                         hintStyle: TextStyle(color: Colors.white),
                         icon: Icon(Icons.search, color: Colors.white),
+
                       ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => SearchScreen(),
+                          ),
+                        );
+                      },
                     )),
                 Expanded(
                     flex: 0,

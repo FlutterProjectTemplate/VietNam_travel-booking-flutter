@@ -82,8 +82,7 @@ class AddPost extends StatelessWidget {
                       height: 50,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: NetworkImage(
-                              "https://wiki-travel.com.vn/Uploads/picture/qiongru-200011040004-ngam-binh-minh-hoang-hon-tren-bien.jpg"),
+                          image: AssetImage("images/04.jpg"),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -105,23 +104,35 @@ class AddPost extends StatelessWidget {
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.all(16.0),
-                            child: Text(
-                              "Hãy viết gì đó...",
-                              style: TextStyle(color: Colors.grey),
-                            ),
+                            child:  TextField(
+                              decoration: InputDecoration(
+                                  hintText: "Hãy viết gì đó",
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  suffixIcon: Icon(Icons.filter_list),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    borderSide: BorderSide(color: Colors.transparent),
+                                  ),
+                                  contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0)),
+                            )
                           ),
                           Padding(
                             padding: const EdgeInsets.all(16.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  "Thêm caption",
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                                Icon(Icons.more_horiz),
-                              ],
-                            ),
+                            child:  TextField(
+                              decoration: InputDecoration(
+                                  hintText: "Thêm caption",
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  suffixIcon: Icon(Icons.more_horiz),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    borderSide: BorderSide(color: Colors.transparent),
+                                  ),
+                                  contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0)),
+                            )
                           )
                         ],
                       ),
@@ -145,20 +156,6 @@ class AddPost extends StatelessWidget {
           ]),
         ),
       ]),
-      bottomNavigationBar: Container(
-        height: 60.0,
-        color: Colors.red,
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Row(children: <Widget>[
-                IconButton(icon: Icon(Icons.home), onPressed: () {}),
-                IconButton(icon: Icon(Icons.face), onPressed: () {}),
-                IconButton(icon: Icon(Icons.my_location), onPressed: () {}),
-              ]),
-              IconButton(icon: Icon(Icons.edit), onPressed: () {})
-            ]),
-      ),
     );
   }
 }

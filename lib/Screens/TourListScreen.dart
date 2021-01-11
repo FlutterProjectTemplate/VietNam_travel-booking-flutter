@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:mobile/Screens/SearchScreen.dart';
 import 'dart:math' as math;
 import '../Utils/Constants.dart';
 import 'package:carousel_pro/carousel_pro.dart';
@@ -28,32 +29,6 @@ class _TourListScreenState extends State<TourListScreen> {
     Trip("Scranton", DateTime.now(), DateTime.now(), 4000000, "car","images/01.jpg"),
   ];
 
-  PageController _pageController;
-  int _page = 0;
-  List navs = ["Trang chủ", "Cộng đồng", "Yêu thích"];
-  int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   static List getDummyList() {
     List list = List.generate(10, (i) {
@@ -85,6 +60,14 @@ class _TourListScreenState extends State<TourListScreen> {
                         hintStyle: TextStyle(color: Colors.white),
                         icon: Icon(Icons.search, color: Colors.white),
                       ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => SearchScreen(),
+                          ),
+                        );
+                      },
                     )),
                 Expanded(
                     flex: 0,
@@ -101,25 +84,7 @@ class _TourListScreenState extends State<TourListScreen> {
           child: ListView.builder(
               itemCount: items.length,
               itemBuilder: (context, index) => buildTripCard(context, index))),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: 'Business',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: 'School',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
-      ),
+
     );
   }
 
