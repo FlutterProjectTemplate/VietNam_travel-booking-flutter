@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Screens/CommunityScreen.dart';
 
 class PostScreen extends StatefulWidget {
   @override
@@ -51,10 +52,10 @@ class AddPost extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-      ),
-      body: Stack(children: <Widget>[
+      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomPadding: false,
+      body: SingleChildScrollView(
+        child: Stack(children: <Widget>[
         Container(
           decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -67,28 +68,40 @@ class AddPost extends StatelessWidget {
         ),
         SafeArea(
           child: Column(children: <Widget>[
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  IconButton(icon: Icon(Icons.close), onPressed: () {}),
-                  Text(
-                    "ĐĂNG BÀI",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage("images/04.jpg"),
-                          fit: BoxFit.cover,
+
+            Container(
+              color: Colors.orangeAccent,
+              child: Row(
+
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    IconButton(icon: Icon(Icons.close), onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CommunityScreen(),
+                        ),
+                      );
+                    }),
+                    Text(
+                      "ĐĂNG BÀI",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage("images/04.jpg"),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ]),
+                  ]),
+            ),
             Stack(
               alignment: Alignment.center,
               children: <Widget>[
@@ -125,6 +138,7 @@ class AddPost extends StatelessWidget {
                                   hintText: "Thêm caption",
                                   fillColor: Colors.white,
                                   filled: true,
+
                                   suffixIcon: Icon(Icons.more_horiz),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(20.0),
@@ -156,6 +170,7 @@ class AddPost extends StatelessWidget {
           ]),
         ),
       ]),
+      ),
     );
   }
 }

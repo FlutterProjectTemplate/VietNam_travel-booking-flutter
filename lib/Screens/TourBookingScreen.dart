@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/Components/CustomAppBar.dart';
+import 'package:mobile/Screens/PaymentScreen.dart';
 
 class TourBookingScreen extends StatefulWidget {
   @override
@@ -35,9 +36,13 @@ class _TourBookingState extends State<TourBookingScreen> {
             _containerOder(),
             Divider(),
             _containerTotal(),
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             _submitButton(),
-            SizedBox(height: 20,)
+            SizedBox(
+              height: 20,
+            )
           ],
         ),
       ),
@@ -258,6 +263,7 @@ class _TourBookingState extends State<TourBookingScreen> {
       ],
     );
   }
+
   Widget _submitButton() {
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -276,12 +282,17 @@ class _TourBookingState extends State<TourBookingScreen> {
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
               colors: [Color(0xfffbb448), Color(0xfff7892b)])),
-      child: Text(
-        'Đặt ngay',
-        style: TextStyle(fontSize: 20, color: Colors.white),
+      child: new GestureDetector(
+        onTap: () {
+          Navigator.push(context, MaterialPageRoute(
+            builder: (_) => PaymentScreen(),
+          ),);
+        },
+        child: Text(
+          'Đặt ngay',
+          style: TextStyle(fontSize: 20, color: Colors.white),
+        ),
       ),
     );
   }
-
-
 }
