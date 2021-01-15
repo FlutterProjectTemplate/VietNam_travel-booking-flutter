@@ -4,8 +4,7 @@ import 'dart:convert';
 
 class Api{
   static const String _baseUrl = "https://run.mocky.io/v3/";
-
-  Future<Tour> fetchTour() async {
+  Future<dynamic> fetchTour() async {
     final response = await http.get('0f605429-0dbe-4d41-893d-da08c1cb698f?fbclid=IwAR07fYzoYXwFe5NI_9Bl0oyfHIM2tPxxMoAPpqOiv7DezTFLc1jjDXO5ofg');
 
     if (response.statusCode == 200) {

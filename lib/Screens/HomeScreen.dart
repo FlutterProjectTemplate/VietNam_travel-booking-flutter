@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:mobile/Netword/Api.dart';
 import 'file:///F:/doan2/travel-booking-flutter/lib/Models/Tour.dart';
 import 'package:mobile/Screens/SearchScreen.dart';
 import 'dart:math' as math;
@@ -13,8 +14,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Future<Tour> futureTour;
-
+  Future<dynamic> futureTour;
+  Api _api=new Api();
   PageController _pageController;
   int _page = 0;
   static const TextStyle optionStyle =
@@ -22,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    futureTour = fetchTour();
+    futureTour = _api.fetchTour();
   }
 
   Widget build(BuildContext context) {
