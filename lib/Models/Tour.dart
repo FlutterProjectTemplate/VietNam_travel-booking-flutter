@@ -1,5 +1,9 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'Image.dart';
+import 'Price.dart';
+import 'Schedule.dart';
 class Tour {
   final int id;
   final String name;
@@ -44,47 +48,7 @@ class Tour {
     );
   }
 }
-class PriceEntities{
-  final int id;
-  final String type;
-  final String primary;
-  final String price;
-  PriceEntities({this.id,this.price,this.primary,this.type});
-  factory PriceEntities.fromJson(Map<String,dynamic>json){
-    return PriceEntities(
-      id: json['id'],
-      type: json['type'],
-      primary: json['primary'],
-      price: json['price']
-    );
-  }
-}
-class ImageEntities{
-  final int id;
-  final String image;
 
-  ImageEntities({this.id,this.image});
-  factory ImageEntities.fromJson(Map<String,dynamic>json){
-    return ImageEntities(
-        id: json['id'],
-        image: json['image'],
-    );
-  }
-}
-class ScheduleEntities{
-  final int id;
-  final String time;
-  final String place;
-
-  ScheduleEntities({this.id,this.time,this.place});
-  factory ScheduleEntities.fromJson(Map<String,dynamic>json){
-    return ScheduleEntities(
-      id: json['id'],
-      time: json['time'],
-      place: json['place']
-    );
-  }
-}
 Future<Tour> fetchTour() async {
   final response = await http.get('https://run.mocky.io/v3/0f605429-0dbe-4d41-893d-da08c1cb698f?fbclid=IwAR07fYzoYXwFe5NI_9Bl0oyfHIM2tPxxMoAPpqOiv7DezTFLc1jjDXO5ofg');
 
