@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:mobile/Components/CustomAppBar.dart';
 import 'package:mobile/Screens/AboutScreen.dart';
 import 'package:mobile/Screens/LoginScreen.dart';
 import 'package:mobile/Utils/Constants.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AccountScreen extends StatefulWidget {
   @override
@@ -10,6 +12,8 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _MyAppState extends State<AccountScreen> {
+  final String _name = "";
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -56,6 +60,13 @@ class _MyAppState extends State<AccountScreen> {
                     SizedBox(
                       height: 10,
                     ),
+                    Text(
+                      "${_name}",
+                      style: TextStyle(
+                          decoration: TextDecoration.none,
+                          color: Colors.white,
+                          fontSize: 16.0),
+                    ),
                     _loginButton()
                   ],
                 ),
@@ -71,7 +82,7 @@ class _MyAppState extends State<AccountScreen> {
         ),
         Container(
           width: MediaQuery.of(context).size.width,
-          margin: EdgeInsets.only(top: 220, right: 5, left: 5,bottom: 5),
+          margin: EdgeInsets.only(top: 220, right: 5, left: 5, bottom: 5),
           padding: EdgeInsets.only(top: 20, left: 15, right: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
@@ -117,8 +128,7 @@ class _MyAppState extends State<AccountScreen> {
                 onTap: () {
                   showDialog(
                     context: context,
-                    builder: (BuildContext context) => CustomDialog(
-                    ),
+                    builder: (BuildContext context) => CustomDialog(),
                   );
                 },
                 child: Row(
@@ -127,7 +137,6 @@ class _MyAppState extends State<AccountScreen> {
                     SizedBox(
                       width: 15,
                     ),
-
                     Text(
                       "Trung tâm hỗ trợ (24/7)",
                       style: TextStyle(
@@ -138,11 +147,11 @@ class _MyAppState extends State<AccountScreen> {
                   ],
                 ),
               ),
-
               Divider(),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => (AboutScreen())));
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => (AboutScreen())));
                 },
                 child: Row(
                   children: [
@@ -160,7 +169,6 @@ class _MyAppState extends State<AccountScreen> {
                   ],
                 ),
               ),
-
               Divider(),
             ],
           ),
@@ -168,11 +176,14 @@ class _MyAppState extends State<AccountScreen> {
       ],
     );
   }
+
   Widget _loginButton() {
     return GestureDetector(
-
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginScreen(previousContext: context,)));
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => LoginScreen(
+                  previousContext: context,
+                )));
       },
       child: Container(
         width: MediaQuery.of(context).size.width / 4,
@@ -200,8 +211,9 @@ class _MyAppState extends State<AccountScreen> {
 }
 
 class CustomDialog extends StatelessWidget {
-
   CustomDialog();
+
+  String phone = "0399529209";
 
   @override
   Widget build(BuildContext context) {
@@ -214,6 +226,7 @@ class CustomDialog extends StatelessWidget {
       child: dialogContent(context),
     );
   }
+
 
   dialogContent(BuildContext context) {
     double a = 10;
@@ -251,7 +264,7 @@ class CustomDialog extends StatelessWidget {
                 ),
               ),
               Text(
-                "011231321321",
+                phone,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 20.0,
@@ -261,9 +274,7 @@ class CustomDialog extends StatelessWidget {
               Align(
                 alignment: Alignment.center,
                 child: FlatButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(); // To close the dialog
-                  },
+                  onPressed: () => launch("tel://${phone}"),
                   child: Text("Gọi"),
                 ),
               ),
