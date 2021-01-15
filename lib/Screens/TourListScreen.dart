@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:mobile/Screens/DetailedTourScreen.dart';
 import 'package:mobile/Screens/SearchScreen.dart';
 import 'dart:math' as math;
 import '../Utils/Constants.dart';
@@ -92,68 +93,79 @@ class _TourListScreenState extends State<TourListScreen> {
     final trip = tripsList[index];
     return new Container(
       child: Card(
-        margin: const EdgeInsets.all(20.0),
-        child: Padding(
-          padding: const EdgeInsets.all(0),
-          child: Column(
-            children: <Widget>[
-              Container(
-                decoration: ShapeDecoration(
-                    image: DecorationImage(
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => DetailedTourScreen(),
+              ),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(0),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  decoration: ShapeDecoration(
+                      image: DecorationImage(
                         image: AssetImage("${trip.imgUrl}"), fit: BoxFit.fill,
-                    ),
-                    shape: RoundedRectangleBorder()),
-                width: double.maxFinite,
-                height: 200,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0, bottom: 4.0,left: 20.0),
-                child: Row(children: <Widget>[
-                  Text(
-                    trip.title,
-                    style: new TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold),
-                  ),
-                  Spacer(),
-                ]),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 7.0, bottom: 5.0, left: 20.0),
-                child: Row(children: <Widget>[
-                  Icon(Icons.star, size: 15.0, color: Colors.orangeAccent,),
-                  Text(
-                    "5.0",
-                    style: new TextStyle(fontSize: 15.0,color: Colors.orangeAccent ),
-
-                  ),
-                  Spacer(),
-                ]),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 4.0, bottom: 10.0),
-                child: Row(children: <Widget>[
-                  Spacer(),
-                ]),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 4.0, bottom: 20.0, left: 20.0, right: 20.0),
-                child: Row(
-                  children: <Widget>[
+                      ),
+                      shape: RoundedRectangleBorder()),
+                  width: double.maxFinite,
+                  height: 200,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0, bottom: 4.0,left: 20.0),
+                  child: Row(children: <Widget>[
                     Text(
-                      "đ ${trip.budget.toStringAsFixed(0)}",
-                      style: new TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold,color: Colors.redAccent),
+                      trip.title,
+                      style: new TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold),
                     ),
                     Spacer(),
-                    Icon(Icons.event_available, size: 15.0 ,color: Colors.green),
-                    Text(
-                      "Có thể đặt từ hôm nay",
-                      style: new TextStyle(fontSize: 10.0,color: Colors.green),
-                    ),
-                  ],
+                  ]),
                 ),
-              )
-            ],
+                Padding(
+                  padding: const EdgeInsets.only(top: 7.0, bottom: 5.0, left: 20.0),
+                  child: Row(children: <Widget>[
+                    Icon(Icons.star, size: 15.0, color: Colors.orangeAccent,),
+                    Text(
+                      "5.0",
+                      style: new TextStyle(fontSize: 15.0,color: Colors.orangeAccent ),
+
+                    ),
+                    Spacer(),
+                  ]),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0, bottom: 10.0),
+                  child: Row(children: <Widget>[
+                    Spacer(),
+                  ]),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0, bottom: 20.0, left: 20.0, right: 20.0),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        "đ ${trip.budget.toStringAsFixed(0)}",
+                        style: new TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold,color: Colors.redAccent),
+                      ),
+                      Spacer(),
+                      Icon(Icons.event_available, size: 15.0 ,color: Colors.green),
+                      Text(
+                        "Có thể đặt từ hôm nay",
+                        style: new TextStyle(fontSize: 10.0,color: Colors.green),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
+        margin: const EdgeInsets.all(20.0),
+
       ),
     );
   }

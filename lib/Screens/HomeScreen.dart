@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:mobile/Components/Tour.dart';
 import 'package:mobile/Screens/SearchScreen.dart';
 import 'dart:math' as math;
 import '../Utils/Constants.dart';
-
+import 'package:http/http.dart' as http;
 import 'package:carousel_pro/carousel_pro.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,11 +13,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Future<Tour> futureTour;
+
   PageController _pageController;
   int _page = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   @override
+  void initState() {
+    super.initState();
+    futureTour = fetchTour();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
