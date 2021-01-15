@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:mobile/Components/Tour.dart';
+import 'file:///F:/doan2/travel-booking-flutter/lib/Models/Tour.dart';
 import 'package:mobile/Screens/SearchScreen.dart';
 import 'dart:math' as math;
 import '../Utils/Constants.dart';
