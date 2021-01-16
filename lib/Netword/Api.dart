@@ -4,19 +4,36 @@ import 'dart:convert';
 
 class Api{
   static const String _baseUrl = "https://run.mocky.io/v3/";
-  Future<dynamic> fetchTour() async {
-    final response = await http.get('0f605429-0dbe-4d41-893d-da08c1cb698f?fbclid=IwAR07fYzoYXwFe5NI_9Bl0oyfHIM2tPxxMoAPpqOiv7DezTFLc1jjDXO5ofg');
+  Future<List<Tour>> fetch() async {
+    final response = await http.get('https://travelbooking4uit.herokuapp.com/api/public/tour/');
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
       // then parse the JSON.
-      return Tour.fromJson(jsonDecode(response.body));
+      final jsonresponse = json.decode(response.body);
+      return (jsonresponse as List).map((p)=>Tour.fromJson(p)).toList();
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
       throw Exception('Failed to load tour');
     }
   }
+  Future fetchTour() async {
+    http.Response response;
+    response= await http.get('https://travelbooking4uit.herokuapp.com/api/public/tour/100000');
+    if(response.statusCode==200){
 
+        return Tour.fromJson(jsonDecode(response.body));
+    }
+  }
+  Future<List<Tour>> fetchTours() async {
+    http.Response response;
+    response= await http.get('https://travelbooking4uit.herokuapp.com/api/public/tour/');
+    if(response.statusCode==200){
+
+        return (json.decode(response.body) as List).map((p)=>Tour.fromJson(p)).toList();
+
+    }
+  }
 }
 

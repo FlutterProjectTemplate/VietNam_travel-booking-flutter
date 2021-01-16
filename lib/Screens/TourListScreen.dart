@@ -1,11 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:mobile/Models/Tour.dart';
+import 'package:mobile/Netword/Api.dart';
 import 'package:mobile/Screens/DetailedTourScreen.dart';
 import 'package:mobile/Screens/SearchScreen.dart';
 import 'dart:math' as math;
 import '../Utils/Constants.dart';
 import 'package:carousel_pro/carousel_pro.dart';
-
+import 'package:http/http.dart' as http;
 class Trip {
   final String title;
   final DateTime startDate;
@@ -30,9 +34,28 @@ class _TourListScreenState extends State<TourListScreen> {
     Trip("Scranton", DateTime.now(), DateTime.now(), 4000000, "car","images/01.jpg"),
   ];
 
+  List<Tour> Tours;
 
-  static List getDummyList() {
-    List list = List.generate(10, (i) {
+  Tour tour;
+  Api _api=new Api();
+  Future fetchTours() async {
+    http.Response response;
+    response= await http.get('https://travelbooking4uit.herokuapp.com/api/public/tour/');
+    if(response.statusCode==200){
+      setState(() {
+        Tours=(json.decode(response.body) as List).map((p)=>Tour.fromJson(p)).toList();
+      });
+    }
+  }
+  @override
+  void initState() {
+    super.initState();
+    fetchTours();
+
+  }
+
+  static List getDummyList(int length) {
+    List list = List.generate(length, (i) {
       return "Item ${i + 1}";
     });
     return list;
@@ -40,7 +63,7 @@ class _TourListScreenState extends State<TourListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List items = getDummyList();
+    List items = getDummyList(Tours.length);
     return Scaffold(
       appBar: AppBar(
         title: Container(
@@ -57,7 +80,7 @@ class _TourListScreenState extends State<TourListScreen> {
                     child: TextFormField(
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: "Địa điểm muốn khám phá",
+                        hintText: Tours[0].name,
                         hintStyle: TextStyle(color: Colors.white),
                         icon: Icon(Icons.search, color: Colors.white),
                       ),
@@ -90,7 +113,7 @@ class _TourListScreenState extends State<TourListScreen> {
   }
 
   Widget buildTripCard(BuildContext context, int index) {
-    final trip = tripsList[index];
+    final Tour tour = Tours[index];
     return new Container(
       child: Card(
         child: InkWell(
@@ -98,7 +121,7 @@ class _TourListScreenState extends State<TourListScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => DetailedTourScreen(),
+                builder: (_) => DetailedTourScreen(Tours[index].id),
               ),
             );
           },
@@ -109,7 +132,7 @@ class _TourListScreenState extends State<TourListScreen> {
                 Container(
                   decoration: ShapeDecoration(
                       image: DecorationImage(
-                        image: AssetImage("${trip.imgUrl}"), fit: BoxFit.fill,
+                        image: NetworkImage(tour.imageEntities[0].image), fit: BoxFit.fill,
                       ),
                       shape: RoundedRectangleBorder()),
                   width: double.maxFinite,
@@ -119,7 +142,7 @@ class _TourListScreenState extends State<TourListScreen> {
                   padding: const EdgeInsets.only(top: 10.0, bottom: 4.0,left: 20.0),
                   child: Row(children: <Widget>[
                     Text(
-                      trip.title,
+                      tour.name,
                       style: new TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold),
                     ),
                     Spacer(),
@@ -148,7 +171,7 @@ class _TourListScreenState extends State<TourListScreen> {
                   child: Row(
                     children: <Widget>[
                       Text(
-                        "đ ${trip.budget.toStringAsFixed(0)}",
+                        "đ ${tour.priceEntities[0].price}",
                         style: new TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold,color: Colors.redAccent),
                       ),
                       Spacer(),

@@ -1,10 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/Components/CustomAppBar.dart';
+import 'package:mobile/Models/Tour.dart';
+import 'package:mobile/Netword/Api.dart';
 import 'package:mobile/Screens/PaymentScreen.dart';
-
+import 'package:http/http.dart' as http;
 class TourBookingScreen extends StatefulWidget {
+  final int tourId;
+
+  TourBookingScreen(@required this.tourId) ;
   @override
   State<StatefulWidget> createState() => _TourBookingState();
 }
@@ -15,9 +22,25 @@ class _TourBookingState extends State<TourBookingScreen> {
   int _babyPrice = 123123;
   int _totalNumberOfPeople = 10;
   int _totalPrice = 1012312312;
+  List<Tour> Tours;
 
+  Tour tour;
+  Api _api=new Api();
+  Future fetchTour(int id) async {
+    http.Response response;
+    response= await http.get('https://travelbooking4uit.herokuapp.com/api/public/tour/$id');
+    if(response.statusCode==200){
+      setState(() {
+        tour=Tour.fromJson(jsonDecode(response.body));
+      });
+    }
+  }
   final oCcy = new NumberFormat("#,### đ", "en_US");
-
+  @override
+  void initState() {
+    super.initState();
+    fetchTour(widget.tourId);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

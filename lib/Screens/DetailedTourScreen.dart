@@ -1,11 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile/Models/Tour.dart';
+import 'package:mobile/Netword/Api.dart';
 import 'package:mobile/Screens/CommentScreen.dart';
 import 'package:mobile/Screens/SearchScreen.dart';
 import 'package:mobile/Screens/TourBookingScreen.dart';
 import 'package:websafe_svg/websafe_svg.dart';
 import 'PostScreen.dart';
-
+import 'package:http/http.dart' as http;
 Color mBackgroundColor = Color(0xFFFEFEFE);
 
 Color mPrimaryColor = Color(0xFFf36f7c);
@@ -13,6 +17,9 @@ Color mPrimaryColor = Color(0xFFf36f7c);
 Color mSecondaryColor = Color(0xFFfff2f3);
 
 class DetailedTourScreen extends StatefulWidget {
+  final int tourId;
+
+  DetailedTourScreen(@required this.tourId) ;
   @override
   _DetailedTourScreenState createState() => _DetailedTourScreenState();
 }
@@ -20,6 +27,23 @@ class DetailedTourScreen extends StatefulWidget {
 class _DetailedTourScreenState extends State<DetailedTourScreen> {
   final double rating=5;
   final String product="images/04.jpg";
+
+  Tour tour;
+  Api _api=new Api();
+  Future fetchTour(int id) async {
+    http.Response response;
+    response= await http.get('https://travelbooking4uit.herokuapp.com/api/public/tour/$id');
+    if(response.statusCode==200){
+      setState(() {
+        tour=Tour.fromJson(jsonDecode(response.body));
+      });
+    }
+  }
+  @override
+  void initState() {
+    super.initState();
+    fetchTour(widget.tourId);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,14 +52,14 @@ class _DetailedTourScreenState extends State<DetailedTourScreen> {
         child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          MyHeader(),
-          PlaceAndName(),
+          MyHeader(tour),
+          PlaceAndName(tour),
           SizedBox(
             height: 36,
           ),
-          About(),
-          Attrabute(),
-          BookNowButton(),
+          About(tour),
+          Attrabute(tour),
+          BookNowButton(tour),
         ],
     ),
       ),
@@ -45,9 +69,11 @@ class _DetailedTourScreenState extends State<DetailedTourScreen> {
 
 
 class About extends StatelessWidget {
-  const About({
-    Key key,
-  }) : super(key: key);
+  final Tour tour;
+
+  const About(
+    @required this.tour,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -89,9 +115,11 @@ class About extends StatelessWidget {
   }
 }
 class PlaceAndName extends StatelessWidget {
-  const PlaceAndName({
-    Key key,
-  }) : super(key: key);
+  final Tour tour;
+
+  const PlaceAndName(
+    @required this.tour,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -143,9 +171,11 @@ class PlaceAndName extends StatelessWidget {
   }
 }
 class Attrabute extends StatelessWidget {
-  const Attrabute({
-    Key key,
-  }) : super(key: key);
+  final Tour tour;
+
+  const Attrabute(
+    @required this.tour,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -178,12 +208,13 @@ class Attrabute extends StatelessWidget {
 class AttrabuteItem extends StatelessWidget {
   final String iconUrl;
   final bool isSelect;
+  final Tour tour;
 
   const AttrabuteItem({
-    Key key,
     this.iconUrl,
     this.isSelect = false,
-  }) : super(key: key);
+    @required this.tour,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -213,9 +244,12 @@ class AttrabuteItem extends StatelessWidget {
   }
 }
 class BookNowButton extends StatelessWidget {
-  const BookNowButton({
-    Key key,
-  }) : super(key: key);
+
+  final Tour tour;
+
+  const BookNowButton(
+    @required this.tour,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -229,7 +263,7 @@ class BookNowButton extends StatelessWidget {
         onPressed: () {Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => TourBookingScreen(),
+            builder: (_) => TourBookingScreen(tour.id),
           ),
         );},
         child: Container(
@@ -249,9 +283,12 @@ class BookNowButton extends StatelessWidget {
   }
 }
 class MyHeader extends StatelessWidget {
-  const MyHeader({
-    Key key,
-  }) : super(key: key);
+  final Tour tour;
+
+  const MyHeader(
+
+    @required this.tour,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -260,8 +297,8 @@ class MyHeader extends StatelessWidget {
       height: 400,
       child: Stack(
         children: [
-          Image.asset(
-            'images/02.jpg',
+          Image.network(
+            tour.imageEntities[0].image,
             height: 400,
             fit: BoxFit.cover,
           ),

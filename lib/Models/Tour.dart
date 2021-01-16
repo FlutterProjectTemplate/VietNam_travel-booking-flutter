@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -23,10 +25,15 @@ class Tour {
   final List<ScheduleEntities> scheduleEntities;
   final List<ImageEntities> imageEntities;
 
-
   Tour({this.id, this.name, this.codeTour,this.startPlace,this.endPlace,this.province,this.national,this.startTime,this.endTime,this.time,this.status,this.description,this.avatarTour,this.discountPercent,this.priceEntities,this.imageEntities,this.scheduleEntities});
 
   factory Tour.fromJson(Map<String, dynamic> json) {
+    List<dynamic> priceEntities = json['priceEntities'];
+    List<PriceEntities> priceentities=priceEntities.map((p)=>PriceEntities.fromJson(p)).toList();
+    List<dynamic> scheduleEntities = json['scheduleEntities'];
+    List<ScheduleEntities> scheduleentities=scheduleEntities.map((p)=>ScheduleEntities.fromJson(p)).toList();
+    List<dynamic> imageEntities = json['imageEntities'];
+    List<ImageEntities> imageentities=imageEntities.map((p)=>ImageEntities.fromJson(p)).toList();
     return Tour(
       id: json['id'],
       name: json['name'],
@@ -42,9 +49,9 @@ class Tour {
       description: json['description'],
       avatarTour: json['avatarTour'],
       discountPercent: json['discountPercent'],
-      priceEntities: json['priceEntities'],
-      scheduleEntities: json['scheduleEntities'],
-      imageEntities: json['imageEntities'],
+      priceEntities: priceentities,
+      scheduleEntities: scheduleentities,
+      imageEntities: imageentities,
     );
   }
 }

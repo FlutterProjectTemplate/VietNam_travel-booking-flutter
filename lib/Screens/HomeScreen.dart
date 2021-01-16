@@ -1,7 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:mobile/Models/Tour.dart';
 import 'package:mobile/Netword/Api.dart';
-import 'file:///F:/doan2/travel-booking-flutter/lib/Models/Tour.dart';
 import 'package:mobile/Screens/SearchScreen.dart';
 import 'dart:math' as math;
 import '../Utils/Constants.dart';
@@ -14,7 +16,28 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Future<dynamic> futureTour;
+  Future<List<Tour>> futureTour;
+  List listresponse;
+  List<Tour> Tours;
+  Tour tour;
+  Future fetchTours() async {
+    http.Response response;
+    response= await http.get('https://travelbooking4uit.herokuapp.com/api/public/tour/');
+    if(response.statusCode==200){
+      setState(() {
+        Tours=(json.decode(response.body) as List).map((p)=>Tour.fromJson(p)).toList();
+      });
+    }
+  }
+  Future fetchTour() async {
+    http.Response response;
+    response= await http.get('https://travelbooking4uit.herokuapp.com/api/public/tour/100000');
+    if(response.statusCode==200){
+      setState(() {
+        tour=Tour.fromJson(jsonDecode(response.body));
+      });
+    }
+  }
   Api _api=new Api();
   PageController _pageController;
   int _page = 0;
@@ -23,7 +46,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    futureTour = _api.fetchTour();
+    fetchTour();
+    fetchTours();
   }
 
   Widget build(BuildContext context) {
@@ -43,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: TextFormField(
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: "Địa điểm muốn khám phá",
+                        hintText: Tours[0].priceEntities[0].type,
                         hintStyle: TextStyle(color: Colors.white),
                         icon: Icon(Icons.search, color: Colors.white),
 
@@ -71,6 +95,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
       body: Stack(
         children: <Widget>[
+          Text(
+            listresponse.toString(),
+          ),
           SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Container(
                   height: 400,
                   child: Align(
-                    child: SlidingCardsView(),
+                    child: new SlidingCardsView(Tours),
                     alignment: Alignment.center,
                   ),
                   decoration: BoxDecoration(
@@ -111,6 +138,9 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class SlidingCardsView extends StatefulWidget {
+  final List<Tour> Tours;
+
+  SlidingCardsView(@required this.Tours) ;
   @override
   _SlidingCardsViewState createState() => _SlidingCardsViewState();
 }
@@ -142,15 +172,17 @@ class _SlidingCardsViewState extends State<SlidingCardsView> {
         controller: pageController,
         children: <Widget>[
           SlidingCard(
-            name: 'Tràng An, Việt Nam',
-            date: '4.20-30',
-            assetName: '01.jpg',
+            name: widget.Tours[0].name,
+            date: widget.Tours[0].startTime,
+            assetName: widget.Tours[0].imageEntities[0].image,
+            price: widget.Tours[0].priceEntities[0].price,
             offset: pageOffset,
           ),
           SlidingCard(
-            name: 'Đà Lạt, Việt Nam',
-            date: '4.28-31',
-            assetName: '02.jpg',
+            name: widget.Tours[1].name,
+            date: widget.Tours[1].startTime,
+            assetName: widget.Tours[1].imageEntities[0].image,
+            price: widget.Tours[1].priceEntities[0].price,
             offset: pageOffset - 1,
           ),
         ],
@@ -164,13 +196,14 @@ class SlidingCard extends StatelessWidget {
   final String date;
   final String assetName;
   final double offset;
-
+  final int price;
   const SlidingCard({
     Key key,
     @required this.name,
     @required this.date,
     @required this.assetName,
     @required this.offset,
+    @required this.price,
   }) : super(key: key);
 
   @override
@@ -186,8 +219,8 @@ class SlidingCard extends StatelessWidget {
           children: <Widget>[
             ClipRRect(
               borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-              child: Image.asset(
-                'images/$assetName',
+              child: Image.network(
+                '$assetName',
                 height: MediaQuery.of(context).size.height * 0.3,
                 alignment: Alignment(-offset.abs(), 0),
                 fit: BoxFit.none,
@@ -198,6 +231,7 @@ class SlidingCard extends StatelessWidget {
               child: CardContent(
                 name: name,
                 date: date,
+                price: price,
                 offset: gauss,
               ),
             ),
@@ -212,12 +246,13 @@ class CardContent extends StatelessWidget {
   final String name;
   final String date;
   final double offset;
-
+  final int price;
   const CardContent(
       {Key key,
       @required this.name,
       @required this.date,
-      @required this.offset})
+      @required this.offset,
+      @required this.price})
       : super(key: key);
 
   @override
@@ -261,7 +296,7 @@ class CardContent extends StatelessWidget {
               Transform.translate(
                 offset: Offset(32 * offset, 0),
                 child: Text(
-                  '0.00 \$',
+                  '$price \$',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,

@@ -1,8 +1,8 @@
 class PriceEntities{
   final int id;
   final String type;
-  final String primary;
-  final String price;
+  final bool primary;
+  final int price;
   PriceEntities({this.id,this.price,this.primary,this.type});
   factory PriceEntities.fromJson(Map<String,dynamic>json){
     return PriceEntities(
