@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mobile/Models/Tour.dart';
-import 'package:mobile/Netword/Api.dart';
+import 'package:mobile/Network/Api.dart';
 import 'package:mobile/Screens/DetailedTourScreen.dart';
 import 'package:mobile/Screens/SearchScreen.dart';
 import 'dart:math' as math;
@@ -37,7 +37,7 @@ class _TourListScreenState extends State<TourListScreen> {
   List<Tour> Tours;
 
   Tour tour;
-  Api _api=new Api();
+
   Future fetchTours() async {
     http.Response response;
     response= await http.get('https://travelbooking4uit.herokuapp.com/api/public/tour/');

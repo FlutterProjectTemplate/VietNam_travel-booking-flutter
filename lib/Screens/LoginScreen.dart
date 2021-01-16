@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mobile/Components/BezierContainer.dart';
 import 'package:mobile/Components/CustomAppBar.dart';
-import 'package:mobile/Screens/MainScreen.dart';
+import 'package:mobile/Models/LoginRequest.dart';
+import 'package:mobile/Models/LoginResponse.dart';
+import 'package:mobile/Network/Api.dart';
 import 'package:mobile/Screens/SignUpScreen.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 import 'ForgotPasswordScreen.dart';
+import 'MainScreen.dart';
 
 class LoginScreen extends StatefulWidget {
   final BuildContext previousContext;
+
   LoginScreen({this.previousContext});
 
   @override
@@ -19,167 +25,36 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _LoginScreenState(this.previousContext);
 
-  Widget _submitButton() {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pop(previousContext);
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MainScreen()));
-      },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.symmetric(vertical: 15),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(25)),
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                  color: Colors.grey.shade200,
-                  offset: Offset(2, 4),
-                  blurRadius: 5,
-                  spreadRadius: 2)
-            ],
-            gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [Color(0xfffbb448), Color(0xfff7892b)])),
-        child: Text(
-          'Đăng nhập',
-          style: TextStyle(fontSize: 20, color: Colors.white),
-        ),
-      ),
-    );
-  }
+  ProgressDialog _progressDialog;
+  String _username;
+  String _password;
+  Future<LoginResponse> _futureLoginResponse;
+  Future<dynamic> _future;
 
-  Widget _forgotPasswordLabel() {
-    return InkWell(
-      onTap: () {
-
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => ForgotPasswordScreen()));
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10),
-        alignment: Alignment.centerRight,
-        child: Text('Bạn quên mật khẩu ?',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-      ),
-    );
-  }
-
-  Widget _createAccountLabel() {
-    return InkWell(
-        onTap: () {
-          // Navigator.push(
-          //     context, MaterialPageRoute(builder: (context) => SignUpPage()));
-        },
-        child: Container(
-          margin: EdgeInsets.symmetric(vertical: 20),
-          padding: EdgeInsets.all(15),
-          alignment: Alignment.bottomCenter,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                'Bạn chưa có tài khoản ?',
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              GestureDetector(
-                onTap: (){
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => SignUpScreen()));
-                },
-                child: Text(
-                  'Đăng ký',
-                  style: TextStyle(
-                      color: Color(0xfff79c4f),
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600),
-                ),
-              ),
-
-            ],
-          ),
-        ),
-
-    );
-
-
-
-
-  }
-
-  Widget _entryField(String title, {bool isPassword = false}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(left: 10.0),
-          child: Text(
-            title,
-            style: TextStyle(color: Colors.grey, fontSize: 16.0),
-          ),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.grey.withOpacity(0.5),
-              width: 1.0,
-            ),
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 0.0),
-          child: Row(
-            children: <Widget>[
-              new Padding(
-                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                child: Icon(
-                  (isPassword ? Icons.security_outlined : Icons.person_outline),
-                  color: Colors.grey,
-                ),
-              ),
-              Container(
-                height: 30.0,
-                width: 1.0,
-                color: Colors.grey.withOpacity(0.5),
-                margin: const EdgeInsets.only(left: 00.0, right: 10.0),
-              ),
-              new Expanded(
-                child: TextField(
-                  obscureText: isPassword,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'Nhập ${title}',
-                    hintStyle: TextStyle(color: Colors.grey),
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _widgetField() {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          _entryField("Email"),
-          _entryField("Mật khẩu", isPassword: true),
-        ],
-      ),
-    );
-  }
-
-  Widget _imageLogo() {
-    return Image.asset('images/logo.png', height: 150, fit: BoxFit.fill);
+  @override
+  void initState() {
+    super.initState();
+    // this should not be done in build method.
   }
 
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
+    _progressDialog = new ProgressDialog(context);
+    _progressDialog.style(
+        message: 'Vui lòng chờ...',
+        borderRadius: 10.0,
+        backgroundColor: Colors.white,
+        progressWidget: CircularProgressIndicator(),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progress: 0.0,
+        maxProgress: 100.0,
+        progressTextStyle: TextStyle(
+            color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
+        messageTextStyle: TextStyle(
+            color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600));
+
     return Scaffold(
       appBar: CustomAppBar(
         context,
@@ -223,4 +98,294 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
+  Widget _submitButton() {
+    return GestureDetector(
+      onTap: () {
+        if (_isValidationField()) login();
+        // Navigator.pop(previousContext);
+        // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MainScreen()));
+      },
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.symmetric(vertical: 15),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(25)),
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                  color: Colors.grey.shade200,
+                  offset: Offset(2, 4),
+                  blurRadius: 5,
+                  spreadRadius: 2)
+            ],
+            gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [Color(0xfffbb448), Color(0xfff7892b)])),
+        child: Text(
+          'Đăng nhập',
+          style: TextStyle(fontSize: 20, color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  Widget _forgotPasswordLabel() {
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => ForgotPasswordScreen()));
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 10),
+        alignment: Alignment.centerRight,
+        child: Text('Bạn quên mật khẩu ?',
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+      ),
+    );
+  }
+
+  Widget _createAccountLabel() {
+    return InkWell(
+      onTap: () {
+        // Navigator.push(
+        //     context, MaterialPageRoute(builder: (context) => SignUpPage()));
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 20),
+        padding: EdgeInsets.all(15),
+        alignment: Alignment.bottomCenter,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Bạn chưa có tài khoản ?',
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => SignUpScreen()));
+              },
+              child: Text(
+                'Đăng ký',
+                style: TextStyle(
+                    color: Color(0xfff79c4f),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _emailField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: Text(
+            "Username",
+            style: TextStyle(color: Colors.grey, fontSize: 16.0),
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.grey.withOpacity(0.5),
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 0.0),
+          child: Row(
+            children: <Widget>[
+              new Padding(
+                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                child: Icon(
+                  Icons.person_outline,
+                  color: Colors.grey,
+                ),
+              ),
+              Container(
+                height: 30.0,
+                width: 1.0,
+                color: Colors.grey.withOpacity(0.5),
+                margin: const EdgeInsets.only(left: 00.0, right: 10.0),
+              ),
+              new Expanded(
+                child: TextField(
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: 'Nhập username',
+                    hintStyle: TextStyle(color: Colors.grey),
+                  ),
+                  onChanged: (String val) {
+                    _username = val;
+                  },
+                ),
+              )
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _passwordField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: Text(
+            "Mật khẩu",
+            style: TextStyle(color: Colors.grey, fontSize: 16.0),
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.grey.withOpacity(0.5),
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 0.0),
+          child: Row(
+            children: <Widget>[
+              new Padding(
+                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                child: Icon(
+                  Icons.security_outlined,
+                  color: Colors.grey,
+                ),
+              ),
+              Container(
+                height: 30.0,
+                width: 1.0,
+                color: Colors.grey.withOpacity(0.5),
+                margin: const EdgeInsets.only(left: 00.0, right: 10.0),
+              ),
+              new Expanded(
+                child: TextField(
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: 'Nhập mật khẩu',
+                    hintStyle: TextStyle(color: Colors.grey),
+                  ),
+                  onChanged: (String val) {
+                    _password = val;
+                  },
+                ),
+              )
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _widgetField() {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          _emailField(),
+          _passwordField(),
+        ],
+      ),
+    );
+  }
+
+  Widget _imageLogo() {
+    return Image.asset('images/logo.png', height: 150, fit: BoxFit.fill);
+  }
+
+  void login() {
+    LoginRequest loginRequest =
+        new LoginRequest(username: _username, password: _password);
+    _progressDialog.show();
+    _futureLoginResponse = Api.login(loginRequest).then((value) {
+      Fluttertoast.showToast(msg: value.name);
+      _progressDialog.hide();
+      // Navigator.pop(previousContext);
+      // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MainScreen()));
+    }, onError: (e) {
+      _progressDialog.hide();
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => AdvanceCustomAlert(message: e.toString().substring(11)),
+      );
+      //   dialogContent(context, e.toString().substring(11));
+    });
+  }
+
+  bool _isValidationField() {
+    if (_username == "" ||
+        _username == null ||
+        _password == "" ||
+        _password == null) {
+      Fluttertoast.showToast(msg: "Vui lòng nghập đầy đủ dữ liệu");
+      return false;
+    }
+    return true;
+  }
 }
+class AdvanceCustomAlert extends StatelessWidget {
+  final String message;
+
+  const AdvanceCustomAlert({Key key, this.message}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0)
+        ),
+        child: Stack(
+          overflow: Overflow.visible,
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              height: 200,
+
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 70, 10, 10),
+                child: Column(
+                  children: [
+                   // Text('Warning !!!', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
+                    SizedBox(height: 5,),
+                    Text(message, style: TextStyle(fontSize: 20),),
+                    SizedBox(height: 20,),
+                    RaisedButton(onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                      color: Color(0xfff7892b),
+                      child: Text('Okay', style: TextStyle(color: Colors.white),),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+                top: -60,
+                child: CircleAvatar(
+                  backgroundColor: Colors.redAccent,
+                  radius: 60,
+                  child: Icon(Icons.assistant_photo, color: Colors.white, size: 50,),
+                )
+            ),
+          ],
+        )
+    );
+  }
+}
+

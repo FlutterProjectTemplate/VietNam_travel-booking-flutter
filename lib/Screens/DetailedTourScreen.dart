@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/Models/Tour.dart';
-import 'package:mobile/Netword/Api.dart';
+import 'package:mobile/Network/Api.dart';
 import 'package:mobile/Screens/CommentScreen.dart';
 import 'package:mobile/Screens/SearchScreen.dart';
 import 'package:mobile/Screens/TourBookingScreen.dart';
@@ -29,7 +29,6 @@ class _DetailedTourScreenState extends State<DetailedTourScreen> {
   final String product="images/04.jpg";
 
   Tour tour;
-  Api _api=new Api();
   Future fetchTour(int id) async {
     http.Response response;
     response= await http.get('https://travelbooking4uit.herokuapp.com/api/public/tour/$id');

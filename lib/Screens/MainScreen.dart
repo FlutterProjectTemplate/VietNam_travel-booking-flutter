@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile/Models/LoginResponse.dart';
 import 'package:mobile/Screens/AccountScreen.dart';
 import 'package:mobile/Screens/CommunityScreen.dart';
 import 'package:mobile/Screens/HomeScreen.dart';
@@ -8,6 +9,10 @@ import 'package:mobile/Screens/PostScreen.dart';
 import 'TourListScreen.dart';
 
 class MainScreen extends StatefulWidget {
+  final LoginResponse loginResponse;
+
+  MainScreen({this.loginResponse});
+
   @override
   State<StatefulWidget> createState() => _MainScreenState();
 }
@@ -16,6 +21,9 @@ class _MainScreenState extends State<MainScreen> {
   final _navigatorKey = GlobalKey<NavigatorState>();
   int _selectedIndex = 0;
   int _lastSelectedIndex = -1;
+  final LoginResponse loginResponse;
+
+  _MainScreenState({this.loginResponse});
 
   void _onItemTapped(int index) {
     if (index != _lastSelectedIndex) {
@@ -38,9 +46,12 @@ class _MainScreenState extends State<MainScreen> {
         break;
       case 1:
         return CommunityScreen();
-        case 2:
+      case 2:
         return TourListScreen();
       case 3:
+        if (loginResponse != null) {
+          return AccountScreen(loginResponse: loginResponse);
+        }
         return AccountScreen();
         break;
       default:

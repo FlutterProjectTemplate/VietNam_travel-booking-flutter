@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mobile/Models/Tour.dart';
-import 'package:mobile/Netword/Api.dart';
+import 'package:mobile/Network/Api.dart';
 import 'package:mobile/Screens/SearchScreen.dart';
 import 'dart:math' as math;
 import '../Utils/Constants.dart';
@@ -38,7 +38,6 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
   }
-  Api _api=new Api();
   PageController _pageController;
   int _page = 0;
   static const TextStyle optionStyle =

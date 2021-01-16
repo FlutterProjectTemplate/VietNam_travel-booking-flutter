@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/Components/CustomAppBar.dart';
 import 'package:mobile/Models/Tour.dart';
-import 'package:mobile/Netword/Api.dart';
+import 'package:mobile/Network/Api.dart';
 import 'package:mobile/Screens/PaymentScreen.dart';
 import 'package:http/http.dart' as http;
 class TourBookingScreen extends StatefulWidget {
@@ -25,7 +25,6 @@ class _TourBookingState extends State<TourBookingScreen> {
   List<Tour> Tours;
 
   Tour tour;
-  Api _api=new Api();
   Future fetchTour(int id) async {
     http.Response response;
     response= await http.get('https://travelbooking4uit.herokuapp.com/api/public/tour/$id');

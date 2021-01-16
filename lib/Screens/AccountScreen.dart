@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:mobile/Components/CustomAppBar.dart';
+import 'package:mobile/Models/LoginResponse.dart';
 import 'package:mobile/Screens/AboutScreen.dart';
 import 'package:mobile/Screens/LoginScreen.dart';
 import 'package:mobile/Utils/Constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AccountScreen extends StatefulWidget {
+  final LoginResponse loginResponse;
+  AccountScreen({this.loginResponse});
   @override
   _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<AccountScreen> {
-  final String _name = "";
+
+  final LoginResponse loginResponse;
+  String _name="";
+  _MyAppState({this.loginResponse}){
+    if(loginResponse!=null)
+      _name=loginResponse.name;
+  }
 
   @override
   Widget build(BuildContext context) {

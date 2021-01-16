@@ -36,6 +36,7 @@ dependencies:
   momo_vn: ^1.0.3
   fluttertoast: ^7.1.6
   http: ^0.12.2
+  progress_dialog: ^1.2.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
