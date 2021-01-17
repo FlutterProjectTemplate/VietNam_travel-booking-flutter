@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:math';
+
+import 'package:mobile/Screens/TourListScreen.dart';
 class SearchScreen extends StatefulWidget {
+
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
@@ -86,7 +89,6 @@ class _SearchScreenState extends State<SearchScreen> {
                         border: InputBorder.none,
                         hintText: "Địa điểm muốn khám phá",
                         hintStyle: TextStyle(color: Colors.white),
-                        icon: Icon(Icons.search, color: Colors.white),
                       ),
 
                     )
@@ -94,8 +96,13 @@ class _SearchScreenState extends State<SearchScreen> {
                 Expanded(
                     flex: 0,
                     child: IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.more_vert, color: Colors.white),
+                      onPressed: () {Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => TourListScreen(_controller.text),
+                        ),
+                      );},
+                      icon: Icon(Icons.search, color: Colors.white),
                       padding: EdgeInsets.symmetric(horizontal: 5.0),
                     )
                 )

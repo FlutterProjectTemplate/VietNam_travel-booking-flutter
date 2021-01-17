@@ -47,7 +47,7 @@ class _MainScreenState extends State<MainScreen> {
       case 1:
         return CommunityScreen();
       case 2:
-        return TourListScreen();
+        return TourListScreen(null);
       case 3:
         if (loginResponse != null) {
           return AccountScreen(loginResponse: loginResponse);

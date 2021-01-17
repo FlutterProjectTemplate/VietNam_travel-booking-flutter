@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:intl/intl.dart';
+import 'package:mobile/Models/SearchRequest.dart';
 import 'package:mobile/Models/Tour.dart';
 import 'package:mobile/Network/Api.dart';
 import 'package:mobile/Screens/DetailedTourScreen.dart';
@@ -21,6 +23,9 @@ class Trip {
 }
 
 class TourListScreen extends StatefulWidget {
+  final String searchKey;
+
+  TourListScreen(@required this.searchKey) ;
   @override
   _TourListScreenState createState() => _TourListScreenState();
 }
@@ -33,25 +38,29 @@ class _TourListScreenState extends State<TourListScreen> {
     Trip("Đài Loan", DateTime.now(), DateTime.now(), 3000000, "plane","images/01.jpg"),
     Trip("Scranton", DateTime.now(), DateTime.now(), 4000000, "car","images/01.jpg"),
   ];
-
+  Future<List<Tour>> _futureResponse;
+  Future<dynamic> _future;
   List<Tour> Tours;
 
   Tour tour;
 
-  Future fetchTours() async {
-    http.Response response;
-    response= await http.get('https://travelbooking4uit.herokuapp.com/api/public/tour/');
-    if(response.statusCode==200){
-      setState(() {
-        Tours=(json.decode(response.body) as List).map((p)=>Tour.fromJson(p)).toList();
-      });
+
+  void search(String searchKey) {
+    SearchRequest searchRequest =
+    new SearchRequest(endPlace: searchKey);
+     Api.search(searchRequest).then((tour){
+       setState(() {
+         Tours=tour;
+       });
+    });
+      //   dialogContent(context, e.toString().substring(11));
     }
-  }
+
   @override
   void initState() {
     super.initState();
-    fetchTours();
 
+    search(widget.searchKey);
   }
 
   static List getDummyList(int length) {
@@ -63,7 +72,7 @@ class _TourListScreenState extends State<TourListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List items = getDummyList(Tours.length);
+    List items = getDummyList(Tours==null? 0 : Tours.length);
     return Scaffold(
       appBar: AppBar(
         title: Container(
@@ -80,9 +89,9 @@ class _TourListScreenState extends State<TourListScreen> {
                     child: TextFormField(
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: Tours[0].name,
+                        hintText: "Bạn cần tìm gì",
                         hintStyle: TextStyle(color: Colors.white),
-                        icon: Icon(Icons.search, color: Colors.white),
+
                       ),
                       onTap: () {
                         Navigator.push(
@@ -97,7 +106,7 @@ class _TourListScreenState extends State<TourListScreen> {
                     flex: 0,
                     child: IconButton(
                       onPressed: () {},
-                      icon: Icon(Icons.more_vert, color: Colors.white),
+                      icon: Icon(Icons.search, color: Colors.white),
                       padding: EdgeInsets.symmetric(horizontal: 5.0),
                     ))
               ],
@@ -114,6 +123,7 @@ class _TourListScreenState extends State<TourListScreen> {
 
   Widget buildTripCard(BuildContext context, int index) {
     final Tour tour = Tours[index];
+    final oCcy = new NumberFormat("#,### đ", "en_US");
     return new Container(
       child: Card(
         child: InkWell(
@@ -132,7 +142,7 @@ class _TourListScreenState extends State<TourListScreen> {
                 Container(
                   decoration: ShapeDecoration(
                       image: DecorationImage(
-                        image: NetworkImage(tour.imageEntities[0].image), fit: BoxFit.fill,
+                        image: NetworkImage(tour==null? 'Loading...' : tour.imageEntities[0].image), fit: BoxFit.fill,
                       ),
                       shape: RoundedRectangleBorder()),
                   width: double.maxFinite,
@@ -142,7 +152,7 @@ class _TourListScreenState extends State<TourListScreen> {
                   padding: const EdgeInsets.only(top: 10.0, bottom: 4.0,left: 20.0),
                   child: Row(children: <Widget>[
                     Text(
-                      tour.name,
+                      tour==null? 'Loading...' : tour.name,
                       style: new TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold),
                     ),
                     Spacer(),
@@ -171,7 +181,7 @@ class _TourListScreenState extends State<TourListScreen> {
                   child: Row(
                     children: <Widget>[
                       Text(
-                        "đ ${tour.priceEntities[0].price}",
+                        "${oCcy.format(tour==null? 'Loading...' : tour.priceEntities[0].price)}",
                         style: new TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold,color: Colors.redAccent),
                       ),
                       Spacer(),

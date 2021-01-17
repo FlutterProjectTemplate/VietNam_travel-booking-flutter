@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/Models/Tour.dart';
 import 'package:mobile/Network/Api.dart';
 import 'package:mobile/Screens/CommentScreen.dart';
 import 'package:mobile/Screens/SearchScreen.dart';
 import 'package:mobile/Screens/TourBookingScreen.dart';
+import 'package:mobile/main.dart';
 import 'package:websafe_svg/websafe_svg.dart';
 import 'PostScreen.dart';
 import 'package:http/http.dart' as http;
@@ -25,33 +27,31 @@ class DetailedTourScreen extends StatefulWidget {
 }
 
 class _DetailedTourScreenState extends State<DetailedTourScreen> {
+
   final double rating=5;
   final String product="images/04.jpg";
 
   Tour tour;
-  Future fetchTour(int id) async {
-    http.Response response;
-    response= await http.get('https://travelbooking4uit.herokuapp.com/api/public/tour/$id');
-    if(response.statusCode==200){
-      setState(() {
-        tour=Tour.fromJson(jsonDecode(response.body));
-      });
-    }
-  }
+
   @override
   void initState() {
     super.initState();
-    fetchTour(widget.tourId);
+    Api.fetchTour(widget.tourId).then((value) {
+      setState(() {
+        tour=value;
+      });
+    });
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
 
+    return Scaffold(
+      appBar: CustomAppBar(rating: 5),
       body: SingleChildScrollView(
         child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          MyHeader(tour),
+          ProductImages(tour),
           PlaceAndName(tour),
           SizedBox(
             height: 36,
@@ -69,45 +69,60 @@ class _DetailedTourScreenState extends State<DetailedTourScreen> {
 
 class About extends StatelessWidget {
   final Tour tour;
-
-  const About(
+  List<Widget> textWidgetList = List<Widget>();
+   About(
     @required this.tour,
   );
 
   @override
   Widget build(BuildContext context) {
+    int legth;
+    if(tour==null){
+      legth=0;
+    } else {legth=tour.scheduleEntities.length;}
+    for (int i = 0; i < legth; i++) {
+      textWidgetList.add(
+        Container(
+          child: Text(tour.scheduleEntities[i].place),
+        ),
+      );
+    }
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 30),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "About",
+            "Giới thiệu",
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
           ),
-          Text(
-            'Oki Islands are located in the Sea of Japan (a shallow, basin-like sea)'
-                'that has a large cold body of water, and the Tsushima Warm Current that '
-                'flows through the sea. As a result, the marine biodiversity of Oki can be '
-                'enjoyed through local food and also underwater. ',
-            textAlign: TextAlign.justify,
-            style: TextStyle(
-              fontSize: 14,
-              height: 1.5,
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ReadMoreText(
+              tour==null? 'Loading...' : tour.description,
+              trimLines: 2,
+              colorClickableText: Colors.pink,
+              trimMode: TrimMode.Line,
+              trimCollapsedText: '...Xem thêm',
+              trimExpandedText: ' Ẩn',
             ),
           ),
           Text(
-            'Read more',
+            "Lịch trình",
             style: TextStyle(
-                color: mPrimaryColor,
-                decoration: TextDecoration.underline,
-                fontWeight: FontWeight.bold
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
-
-          )
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(child:Column(
+              children: textWidgetList,
+            ),)
+          ),
         ],
       ),
     );
@@ -144,14 +159,14 @@ class PlaceAndName extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Oki Islands',
+                tour==null? 'Loading...' : tour.name,
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Text(
-                'Sea of Japan',
+                tour==null? 'Loading...' : tour.province,
                 style: TextStyle(
                   fontSize: 12,
                 ),
@@ -281,57 +296,322 @@ class BookNowButton extends StatelessWidget {
     );
   }
 }
-class MyHeader extends StatelessWidget {
-  final Tour tour;
+class CustomAppBar extends PreferredSize {
+  final double rating;
 
-  const MyHeader(
+  CustomAppBar({@required this.rating});
 
-    @required this.tour,
-  );
+  @override
+  // AppBar().preferredSize.height provide us the height that appy on our app bar
+  Size get preferredSize => Size.fromHeight(AppBar().preferredSize.height);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 400,
-      child: Stack(
-        children: [
-          Image.network(
-            tour.imageEntities[0].image,
-            height: 400,
-            fit: BoxFit.cover,
-          ),
-          Positioned(
-            left: 30,
-            top: 60,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Container(
-                padding: EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                    color: mBackgroundColor,
-                    borderRadius: BorderRadius.circular(8)),
-                child: Icon(
-                  Icons.arrow_back_ios,
+    return SafeArea(
+      child: Padding(
+        padding:
+        EdgeInsets.symmetric(horizontal: 20),
+        child: Row(
+          children: [
+            SizedBox(
+              height: 40,
+              width: 40,
+              child: FlatButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(60),
+                ),
+                color: Colors.white,
+                padding: EdgeInsets.zero,
+                onPressed: () => Navigator.pop(context),
+                child: WebsafeSvg.asset(
+                  "images/Back ICon.svg",
+                  height: 15,
                 ),
               ),
             ),
-          ),
-          Positioned(
-            right: 16,
-            bottom: 16,
-            child: Container(
-              padding: EdgeInsets.all(8),
+            Spacer(),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
               decoration: BoxDecoration(
-                  color: mSecondaryColor,
-                  borderRadius: BorderRadius.circular(36)
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(14),
               ),
-              child: WebsafeSvg.asset('assets/icons/favorite.svg'),
+              child: Row(
+                children: [
+                  Text(
+                    "$rating",
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  WebsafeSvg.asset("image/star.svg"),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+enum TrimMode {
+  Length,
+  Line,
+}
+
+class ReadMoreText extends StatefulWidget {
+  const ReadMoreText(
+      this.data, {
+        Key key,
+        this.trimExpandedText = ' read less',
+        this.trimCollapsedText = ' ...read more',
+        this.colorClickableText,
+        this.trimLength = 240,
+        this.trimLines = 2,
+        this.trimMode = TrimMode.Length,
+        this.style,
+        this.textAlign,
+        this.textDirection,
+        this.locale,
+        this.textScaleFactor,
+        this.semanticsLabel,
+      })  : assert(data != null),
+        super(key: key);
+
+  final String data;
+  final String trimExpandedText;
+  final String trimCollapsedText;
+  final Color colorClickableText;
+  final int trimLength;
+  final int trimLines;
+  final TrimMode trimMode;
+  final TextStyle style;
+  final TextAlign textAlign;
+  final TextDirection textDirection;
+  final Locale locale;
+  final double textScaleFactor;
+  final String semanticsLabel;
+
+  @override
+  ReadMoreTextState createState() => ReadMoreTextState();
+}
+
+const String _kEllipsis = '\u2026';
+
+const String _kLineSeparator = '\u2028';
+
+class ReadMoreTextState extends State<ReadMoreText> {
+  bool _readMore = true;
+
+  void _onTapLink() {
+    setState(() => _readMore = !_readMore);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final DefaultTextStyle defaultTextStyle = DefaultTextStyle.of(context);
+    TextStyle effectiveTextStyle = widget.style;
+    if (widget.style == null || widget.style.inherit) {
+      effectiveTextStyle = defaultTextStyle.style.merge(widget.style);
+    }
+
+    final textAlign =
+        widget.textAlign ?? defaultTextStyle.textAlign ?? TextAlign.start;
+    final textDirection = widget.textDirection ?? Directionality.of(context);
+    final textScaleFactor =
+        widget.textScaleFactor ?? MediaQuery.textScaleFactorOf(context);
+    final overflow = defaultTextStyle.overflow;
+    final locale =
+        widget.locale ?? Localizations.localeOf(context, nullOk: true);
+
+    final colorClickableText =
+        widget.colorClickableText ?? Theme.of(context).accentColor;
+
+    TextSpan link = TextSpan(
+      text: _readMore ? widget.trimCollapsedText : widget.trimExpandedText,
+      style: effectiveTextStyle.copyWith(
+        color: colorClickableText,
+      ),
+      recognizer: TapGestureRecognizer()..onTap = _onTapLink,
+    );
+
+    Widget result = LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        assert(constraints.hasBoundedWidth);
+        final double maxWidth = constraints.maxWidth;
+
+        // Create a TextSpan with data
+        final text = TextSpan(
+          style: effectiveTextStyle,
+          text: widget.data,
+        );
+
+        // Layout and measure link
+        TextPainter textPainter = TextPainter(
+          text: link,
+          textAlign: textAlign,
+          textDirection: textDirection,
+          textScaleFactor: textScaleFactor,
+          maxLines: widget.trimLines,
+          ellipsis: overflow == TextOverflow.ellipsis ? _kEllipsis : null,
+          locale: locale,
+        );
+        textPainter.layout(minWidth: constraints.minWidth, maxWidth: maxWidth);
+        final linkSize = textPainter.size;
+
+        // Layout and measure text
+        textPainter.text = text;
+        textPainter.layout(minWidth: constraints.minWidth, maxWidth: maxWidth);
+        final textSize = textPainter.size;
+
+        print('linkSize $linkSize textSize $textSize');
+
+        // Get the endIndex of data
+        bool linkLongerThanLine = false;
+        int endIndex;
+
+        if (linkSize.width < maxWidth) {
+          final pos = textPainter.getPositionForOffset(Offset(
+            textSize.width - linkSize.width,
+            textSize.height,
+          ));
+          endIndex = textPainter.getOffsetBefore(pos.offset);
+        }
+        else {
+          var pos = textPainter.getPositionForOffset(
+            textSize.bottomLeft(Offset.zero),
+          );
+          endIndex = pos.offset;
+          linkLongerThanLine = true;
+        }
+
+        var textSpan;
+        switch (widget.trimMode) {
+          case TrimMode.Length:
+            if (widget.trimLength < widget.data.length) {
+              textSpan = TextSpan(
+                style: effectiveTextStyle,
+                text: _readMore
+                    ? widget.data.substring(0, widget.trimLength)
+                    : widget.data,
+                children: <TextSpan>[link],
+              );
+            } else {
+              textSpan = TextSpan(
+                style: effectiveTextStyle,
+                text: widget.data,
+              );
+            }
+            break;
+          case TrimMode.Line:
+            if (textPainter.didExceedMaxLines) {
+              textSpan = TextSpan(
+                style: effectiveTextStyle,
+                text: _readMore
+                    ? widget.data.substring(0, endIndex) +
+                    (linkLongerThanLine ? _kLineSeparator : '')
+                    : widget.data,
+                children: <TextSpan>[link],
+              );
+            } else {
+              textSpan = TextSpan(
+                style: effectiveTextStyle,
+                text: widget.data,
+              );
+            }
+            break;
+          default:
+            throw Exception(
+                'TrimMode type: ${widget.trimMode} is not supported');
+        }
+
+        return RichText(
+          textAlign: textAlign,
+          textDirection: textDirection,
+          softWrap: true,
+          //softWrap,
+          overflow: TextOverflow.clip,
+          //overflow,
+          textScaleFactor: textScaleFactor,
+          text: textSpan,
+        );
+      },
+    );
+    if (widget.semanticsLabel != null) {
+      result = Semantics(
+        textDirection: widget.textDirection,
+        label: widget.semanticsLabel,
+        child: ExcludeSemantics(
+          child: result,
+        ),
+      );
+    }
+    return result;
+  }
+}
+class ProductImages extends StatefulWidget {
+   ProductImages(
+    @required this.tourImage,
+  ) ;
+
+  final Tour tourImage;
+
+  @override
+  _ProductImagesState createState() => _ProductImagesState();
+}
+
+class _ProductImagesState extends State<ProductImages> {
+  int selectedImage = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          width: 400,
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: Hero(
+              tag: widget.tourImage.name,
+              child: Image.network(
+                  widget.tourImage.imageEntities[selectedImage].image),
             ),
           ),
-        ],
+        ),
+        // SizedBox(height: getProportionateScreenWidth(20)),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ...List.generate(widget.tourImage.imageEntities.length,
+                    (index) => buildSmallProductPreview(index)),
+          ],
+        )
+      ],
+    );
+  }
+
+  GestureDetector buildSmallProductPreview(int index) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedImage = index;
+        });
+      },
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 250),
+        margin: EdgeInsets.only(right: 15),
+        padding: EdgeInsets.all(8),
+        height: 48,
+        width: 48,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+              color: Color(0xFFFF7643).withOpacity(selectedImage == index ? 1 : 0)),
+        ),
+        child: Image.network(widget.tourImage.imageEntities[index].image),
       ),
     );
   }

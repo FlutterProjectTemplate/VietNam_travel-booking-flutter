@@ -1,10 +1,14 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:intl/intl.dart';
 import 'package:mobile/Models/Tour.dart';
 import 'package:mobile/Network/Api.dart';
+import 'package:mobile/Screens/DetailedTourScreen.dart';
 import 'package:mobile/Screens/SearchScreen.dart';
+import 'package:mobile/Screens/TourBookingScreen.dart';
 import 'dart:math' as math;
 import '../Utils/Constants.dart';
 import 'package:http/http.dart' as http;
@@ -20,24 +24,8 @@ class _HomeScreenState extends State<HomeScreen> {
   List listresponse;
   List<Tour> Tours;
   Tour tour;
-  Future fetchTours() async {
-    http.Response response;
-    response= await http.get('https://travelbooking4uit.herokuapp.com/api/public/tour/');
-    if(response.statusCode==200){
-      setState(() {
-        Tours=(json.decode(response.body) as List).map((p)=>Tour.fromJson(p)).toList();
-      });
-    }
-  }
-  Future fetchTour() async {
-    http.Response response;
-    response= await http.get('https://travelbooking4uit.herokuapp.com/api/public/tour/100000');
-    if(response.statusCode==200){
-      setState(() {
-        tour=Tour.fromJson(jsonDecode(response.body));
-      });
-    }
-  }
+
+
   PageController _pageController;
   int _page = 0;
   static const TextStyle optionStyle =
@@ -45,8 +33,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    fetchTour();
-    fetchTours();
+
+    Api.getTour().then((value) {
+      setState(() {
+        Tours=value;
+      });
+
+    });
+    log('data: $Tours');
   }
 
   Widget build(BuildContext context) {
@@ -66,9 +60,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: TextFormField(
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: Tours[0].priceEntities[0].type,
+                        hintText: "Bạn đang tìm gì",
                         hintStyle: TextStyle(color: Colors.white),
-                        icon: Icon(Icons.search, color: Colors.white),
 
                       ),
                       onTap: () {
@@ -84,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     flex: 0,
                     child: IconButton(
                       onPressed: () {},
-                      icon: Icon(Icons.more_vert, color: Colors.white),
+                      icon: Icon(Icons.search, color: Colors.white),
                       padding: EdgeInsets.symmetric(horizontal: 5.0),
                     ))
               ],
@@ -171,18 +164,20 @@ class _SlidingCardsViewState extends State<SlidingCardsView> {
         controller: pageController,
         children: <Widget>[
           SlidingCard(
-            name: widget.Tours[0].name,
-            date: widget.Tours[0].startTime,
-            assetName: widget.Tours[0].imageEntities[0].image,
-            price: widget.Tours[0].priceEntities[0].price,
+            name: widget.Tours==null? 'Loading...' : widget.Tours[0].name,
+            date: widget.Tours==null? 'Loading...' : widget.Tours[0].startTime,
+            assetName: widget.Tours==null? 'Loading...' : widget.Tours[0].imageEntities[0].image,
+            price: widget.Tours==null? 0 : widget.Tours[0].priceEntities[0].price,
+            id: widget.Tours==null? 0 : widget.Tours[0].id,
             offset: pageOffset,
           ),
           SlidingCard(
-            name: widget.Tours[1].name,
-            date: widget.Tours[1].startTime,
-            assetName: widget.Tours[1].imageEntities[0].image,
-            price: widget.Tours[1].priceEntities[0].price,
+            name: widget.Tours==null? 'Loading...' : widget.Tours[1].name,
+            date: widget.Tours==null? 'Loading...' : widget.Tours[1].startTime,
+            assetName: widget.Tours==null? 'Loading...' : widget.Tours[1].imageEntities[0].image,
+            price: widget.Tours==null? 0 : widget.Tours[1].priceEntities[0].price,
             offset: pageOffset - 1,
+            id: widget.Tours==null? 0 : widget.Tours[1].id,
           ),
         ],
       ),
@@ -196,6 +191,7 @@ class SlidingCard extends StatelessWidget {
   final String assetName;
   final double offset;
   final int price;
+  final int id;
   const SlidingCard({
     Key key,
     @required this.name,
@@ -203,6 +199,7 @@ class SlidingCard extends StatelessWidget {
     @required this.assetName,
     @required this.offset,
     @required this.price,
+    @required this.id,
   }) : super(key: key);
 
   @override
@@ -220,7 +217,7 @@ class SlidingCard extends StatelessWidget {
               borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
               child: Image.network(
                 '$assetName',
-                height: MediaQuery.of(context).size.height * 0.3,
+                height: MediaQuery.of(context).size.height * 0.25,
                 alignment: Alignment(-offset.abs(), 0),
                 fit: BoxFit.none,
               ),
@@ -231,6 +228,7 @@ class SlidingCard extends StatelessWidget {
                 name: name,
                 date: date,
                 price: price,
+                id: id,
                 offset: gauss,
               ),
             ),
@@ -246,12 +244,15 @@ class CardContent extends StatelessWidget {
   final String date;
   final double offset;
   final int price;
-  const CardContent(
+  final int id;
+  final oCcy = new NumberFormat("#,### đ", "en_US");
+   CardContent(
       {Key key,
       @required this.name,
       @required this.date,
       @required this.offset,
-      @required this.price})
+      @required this.price,
+        @required this.id})
       : super(key: key);
 
   @override
@@ -279,6 +280,12 @@ class CardContent extends StatelessWidget {
               Transform.translate(
                 offset: Offset(48 * offset, 0),
                 child: RaisedButton(
+                  onPressed: () {Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => DetailedTourScreen(id),
+                    ),
+                  );},
                   color: Color(0xFF162A49),
                   child: Transform.translate(
                     offset: Offset(24 * offset, 0),
@@ -288,14 +295,14 @@ class CardContent extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(32),
                   ),
-                  onPressed: () {},
+
                 ),
               ),
               Spacer(),
               Transform.translate(
                 offset: Offset(32 * offset, 0),
                 child: Text(
-                  '$price \$',
+                  '${oCcy.format(price)}',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,

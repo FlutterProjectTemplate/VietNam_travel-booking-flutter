@@ -31,7 +31,6 @@ class _CommunityScreenState extends State<CommunityScreen> {
                         border: InputBorder.none,
                         hintText: "Địa điểm muốn khám phá",
                         hintStyle: TextStyle(color: Colors.white),
-                        icon: Icon(Icons.search, color: Colors.white),
                       ),
                       onTap: () {
                         Navigator.push(
@@ -46,7 +45,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                     flex: 0,
                     child: IconButton(
                       onPressed: () {},
-                      icon: Icon(Icons.more_vert, color: Colors.white),
+                      icon: Icon(Icons.search, color: Colors.white),
                       padding: EdgeInsets.symmetric(horizontal: 5.0),
                     ))
               ],
