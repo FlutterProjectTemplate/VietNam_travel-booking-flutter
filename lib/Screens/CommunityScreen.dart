@@ -1,8 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:mobile/Models/Post.dart';
+import 'package:mobile/Network/Api.dart';
 import 'package:mobile/Screens/CommentScreen.dart';
+import 'package:mobile/Screens/LoginScreen.dart';
 import 'package:mobile/Screens/SearchScreen.dart';
-
+import 'package:mobile/globals.dart' as globals;
 import 'PostScreen.dart';
 
 class CommunityScreen extends StatefulWidget {
@@ -11,8 +15,35 @@ class CommunityScreen extends StatefulWidget {
 }
 
 class _CommunityScreenState extends State<CommunityScreen> {
+  List<Post> posts;
+  @override
+  void initState() {
+    super.initState();
+    Api.getPosts().then((value) {
+      setState(() {
+        posts=value;
+      });
+    });
+  }
+  static List getDummyList(int length) {
+    List list = List.generate(length, (i) {
+      return "Item ${i + 1}";
+    });
+    return list;
+  }
   @override
   Widget build(BuildContext context) {
+    List items = getDummyList(posts==null? 0 : posts.length);
+    if(globals.isLoggedIn==false){
+      return Center(
+        child: Text("Vui lòng đăng nhập để sử dụng tính năng này",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+    } else
     return Scaffold(
       appBar: AppBar(
         title: Container(
@@ -69,9 +100,9 @@ class _CommunityScreenState extends State<CommunityScreen> {
                     child: SizedBox(
                       height: 200.0,
                       child:  ListView.builder(
-                          itemCount: 5,
+                          itemCount: items.length,
                           itemBuilder: (BuildContext context, int index) =>
-                              CardPost(),
+                              CardPost(context,index),
                        ),
 
                     ),
@@ -81,24 +112,25 @@ class _CommunityScreenState extends State<CommunityScreen> {
 ]),
     );
   }
-}
-
-class CardPost extends StatelessWidget {
-  const CardPost({
-    Key key,
-  }) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
+  Widget CardPost(BuildContext context, int index) {
+    final Post post = posts[index];
+    DateTime date;
+    String formattedDate;
+    if(post!=null) {
+      date=DateTime.parse(post.time);
+      formattedDate = "Lúc ${date.hour.toString()}:${date.minute.toString()} ngày ${date.day.toString().padLeft(2,'0')}-${date.month.toString().padLeft(2,'0')}-${date.year.toString()} ";
+    } else formattedDate="0";
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
       child: Container(
         width: double.infinity,
-        height: 560.0,
+        height: 500.0,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(25.0),
         ),
         child: Column(
+
           children: <Widget>[
             Padding(
               padding: EdgeInsets.symmetric(vertical: 10.0),
@@ -123,39 +155,47 @@ class CardPost extends StatelessWidget {
                           child: Image(
                             height: 50.0,
                             width: 50.0,
-                            image: AssetImage("images/04.jpg"),
+                            image: NetworkImage(post==null? 'Loading...' : post.imageEntities[0].image),
                             fit: BoxFit.cover,
                           ),
                         ),
                       ),
                     ),
                     title: Text(
-                      "Tran Chung",
+                      "${ post==null ? 'Loading...' : post.nameUser}",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    subtitle: Text("Thứ năm lúc 21:39"),
+                    subtitle: Text("${formattedDate}"),
                     trailing: IconButton(
                       icon: Icon(Icons.more_horiz),
                       color: Colors.black,
                       onPressed: () => print('More'),
                     ),
                   ),
+
+                  Container(
+                    margin: const EdgeInsets.only(right: 250.0,top: 20),
+                    child: Text("${post.content==null ? '' : post.content}",
+                    ),
+                  ),
+
                   InkWell(
                     onDoubleTap: () => print('Like post'),
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => CommentScreen(),
+                          builder: (_) => CommentScreen(post.id),
                         ),
                       );
                     },
                     child: Container(
+
                       margin: EdgeInsets.all(10.0),
                       width: double.infinity,
-                      height: 400.0,
+                      height: 250.0,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(25.0),
                         boxShadow: [
@@ -166,7 +206,7 @@ class CardPost extends StatelessWidget {
                           ),
                         ],
                         image: DecorationImage(
-                          image: AssetImage("images/03.jpg"),
+                          image: NetworkImage(post==null? 'Loading...' : post.imageEntities[0].image),
                           fit: BoxFit.fitWidth,
                         ),
                       ),
@@ -187,7 +227,7 @@ class CardPost extends StatelessWidget {
                                   onPressed: () => print('Like post'),
                                 ),
                                 Text(
-                                  '2,515',
+                                  "${post==null? '0' : post.amount_like}",
                                   style: TextStyle(
                                     fontSize: 14.0,
                                     fontWeight: FontWeight.w600,
@@ -204,7 +244,7 @@ class CardPost extends StatelessWidget {
                                   onPressed: () {},
                                 ),
                                 Text(
-                                  '350',
+                                  "${post==null? '0' : post.amount_comment}",
                                   style: TextStyle(
                                     fontSize: 14.0,
                                     fontWeight: FontWeight.w600,
@@ -230,14 +270,7 @@ class CardPost extends StatelessWidget {
       ),
     );
   }
-}
-
-class PostMenu extends StatelessWidget {
-  const PostMenu({
-    Key key,
-  }) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
+  Widget PostMenu() {
     return Card(
 
       child: Container(
@@ -262,7 +295,7 @@ class PostMenu extends StatelessWidget {
                     ),
                     SizedBox(width: 10.0),
                     Text(
-                      "Xin chào",
+                      "Xin chào ${globals.isLoggedIn==false ? "" : globals.loginResponse.name}",
                       style: TextStyle(color: Colors.white),
                     ),
                   ],
@@ -288,7 +321,7 @@ class PostMenu extends StatelessWidget {
                     borderSide: BorderSide(color: Colors.transparent),
                   ),
                   contentPadding:
-                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0)),
+                  EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0)),
               onTap: () {
                 Navigator.push(
                   context,
@@ -304,3 +337,8 @@ class PostMenu extends StatelessWidget {
     );
   }
 }
+
+
+
+
+

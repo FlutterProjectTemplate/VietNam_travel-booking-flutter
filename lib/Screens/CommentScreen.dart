@@ -1,14 +1,28 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:mobile/Models/Post.dart';
+import 'package:mobile/Network/Api.dart';
 
 class CommentScreen extends StatefulWidget {
+  final int postId;
 
+  CommentScreen(@required this.postId) ;
   @override
   _CommentScreenState createState() => _CommentScreenState();
 }
 
 class _CommentScreenState extends State<CommentScreen> {
+  Post post;
+  @override
+  void initState() {
+    super.initState();
+    Api.getPost(widget.postId).then((value) {
+      setState(() {
+        post=value;
+      });
+    });
+  }
   Widget _buildComment(int index) {
     return Padding(
       padding: EdgeInsets.all(10.0),
@@ -31,14 +45,14 @@ class _CommentScreenState extends State<CommentScreen> {
               child: Image(
                 height: 50.0,
                 width: 50.0,
-                image: AssetImage("images/04.jpg"),
+                image: NetworkImage(post==null? 'Loading...' : post.imageEntities[0].image),
                 fit: BoxFit.cover,
               ),
             ),
           ),
         ),
         title: Text(
-          "Nam Dao",
+          "${post==null? 'Loading...' : post.nameUser}",
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
@@ -57,6 +71,12 @@ class _CommentScreenState extends State<CommentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    DateTime date;
+    String formattedDate;
+    if(post!=null) {
+      date=DateTime.parse(post.time);
+      formattedDate = "${date.hour.toString()}:${date.minute.toString()} ngày ${date.day.toString().padLeft(2,'0')}-${date.month.toString().padLeft(2,'0')}-${date.year.toString()} ";
+    } else formattedDate="0";
     return Scaffold(
       backgroundColor: Color(0xFFEDF0F6),
       body: SingleChildScrollView(
@@ -66,7 +86,7 @@ class _CommentScreenState extends State<CommentScreen> {
             Container(
               padding: EdgeInsets.only(top: 40.0),
               width: double.infinity,
-              height: 600.0,
+              height: 550.0,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(25.0),
@@ -87,7 +107,7 @@ class _CommentScreenState extends State<CommentScreen> {
                               onPressed: () => Navigator.pop(context),
                             ),
                             Container(
-                              width: MediaQuery.of(context).size.width * 0.8,
+                              width: MediaQuery.of(context).size.width * 0.865,
                               child: ListTile(
                                 leading: Container(
                                   width: 50.0,
@@ -115,27 +135,34 @@ class _CommentScreenState extends State<CommentScreen> {
                                   ),
                                 ),
                                 title: Text(
-                                  "NamDao",
+                                  "${post==null? 'Loading...' : post.nameUser}",
                                   style: TextStyle(
+                                    fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                subtitle: Text("2 hours ago"),
+                                subtitle: Text("${formattedDate}"),
                                 trailing: IconButton(
                                   icon: Icon(Icons.more_horiz),
                                   color: Colors.black,
                                   onPressed: () => print('More'),
                                 ),
                               ),
+
                             ),
                           ],
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(right: 250.0,top: 20),
+                          child: Text("${post==null||post.content==null ? "" : post.content}",
+                          ),
                         ),
                         InkWell(
                           onDoubleTap: () => print('Like post'),
                           child: Container(
                             margin: EdgeInsets.all(10.0),
                             width: double.infinity,
-                            height: 400.0,
+                            height: 250.0,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(25.0),
                               boxShadow: [
@@ -146,7 +173,7 @@ class _CommentScreenState extends State<CommentScreen> {
                                 ),
                               ],
                               image: DecorationImage(
-                                image: AssetImage("images/03.jpg"),
+                                image: NetworkImage("${post==null? 'Loading...' : post.imageEntities[0].image}"),
                                 fit: BoxFit.fitWidth,
                               ),
                             ),
@@ -167,7 +194,7 @@ class _CommentScreenState extends State<CommentScreen> {
                                         onPressed: () => print('Like post'),
                                       ),
                                       Text(
-                                        '2,515',
+                                        "${post==null? '0' : post.amount_like}",
                                         style: TextStyle(
                                           fontSize: 14.0,
                                           fontWeight: FontWeight.w600,
@@ -186,7 +213,7 @@ class _CommentScreenState extends State<CommentScreen> {
                                         },
                                       ),
                                       Text(
-                                        '350',
+                                        "${post==null? 'Loading...' : post.amount_comment}",
                                         style: TextStyle(
                                           fontSize: 14.0,
                                           fontWeight: FontWeight.w600,
@@ -207,7 +234,9 @@ class _CommentScreenState extends State<CommentScreen> {
                       ],
                     ),
                   ),
+
                 ],
+
               ),
             ),
             SizedBox(height: 10.0),
@@ -286,7 +315,7 @@ class _CommentScreenState extends State<CommentScreen> {
                       child: Image(
                         height: 48.0,
                         width: 48.0,
-                        image: AssetImage("images/04.jpg"),
+                        image: NetworkImage("${post==null? 'Loading...' : post.imageEntities[0].image}"),
                         fit: BoxFit.cover,
                       ),
                     ),

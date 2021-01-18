@@ -574,7 +574,7 @@ class _ProductImagesState extends State<ProductImages> {
           child: AspectRatio(
             aspectRatio: 1,
             child: Hero(
-              tag: widget.tourImage.name,
+              tag: widget.tourImage==null? 'Loading...' : widget.tourImage.name,
               child: Image.network(
                   widget.tourImage.imageEntities[selectedImage].image),
             ),
