@@ -13,6 +13,7 @@ import 'dart:math' as math;
 import '../Utils/Constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:mobile/globals.dart' as globals;
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -20,25 +21,23 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Future<List<Tour>> futureTour;
   List listresponse;
   List<Tour> Tours;
   Tour tour;
-
 
   PageController _pageController;
   int _page = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+
   @override
   void initState() {
     super.initState();
 
-    Api.getTour().then((value) {
+    globals.futureTour = Api.getTour().then((value) {
       setState(() {
-        Tours=value;
+        globals.tours = value;
       });
-
     });
     log('data: $Tours');
   }
@@ -62,7 +61,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         border: InputBorder.none,
                         hintText: "Bạn đang tìm gì",
                         hintStyle: TextStyle(color: Colors.white),
-
                       ),
                       onTap: () {
                         Navigator.push(
@@ -84,7 +82,6 @@ class _HomeScreenState extends State<HomeScreen> {
             )),
         backgroundColor: Colors.orange,
       ),
-
       body: Stack(
         children: <Widget>[
           Text(
@@ -112,7 +109,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 Container(
                   height: 400,
                   child: Align(
-                    child: new SlidingCardsView(Tours),
+                    child: globals.tours != null
+                        ? SlidingCardsView(globals.tours)
+                        : Center(child: CircularProgressIndicator()),
+                    // child: FutureBuilder(
+                    //   builder: (context, snapshot) {
+                    //     if (snapshot.connectionState == ConnectionState.none &&
+                    //         snapshot.hasData == null) {
+                    //       //print('project snapshot data is: ${projectSnap.data}');
+                    //       return Center(child: CircularProgressIndicator());
+                    //     }
+                    //     return snapshot.hasData?
+                    //     SlidingCardsView(snapshot.data):Center(child: CircularProgressIndicator());
+                    //   },
+                    //   future: globals.futureTour,
+                    // ),
                     alignment: Alignment.center,
                   ),
                   decoration: BoxDecoration(
@@ -132,7 +143,8 @@ class _HomeScreenState extends State<HomeScreen> {
 class SlidingCardsView extends StatefulWidget {
   final List<Tour> Tours;
 
-  SlidingCardsView(@required this.Tours) ;
+  SlidingCardsView(@required this.Tours);
+
   @override
   _SlidingCardsViewState createState() => _SlidingCardsViewState();
 }
@@ -164,20 +176,102 @@ class _SlidingCardsViewState extends State<SlidingCardsView> {
         controller: pageController,
         children: <Widget>[
           SlidingCard(
-            name: widget.Tours==null? 'Loading...' : widget.Tours[0].name,
-            date: widget.Tours==null? 'Loading...' : widget.Tours[0].startTime,
-            assetName: widget.Tours==null? 'Loading...' : widget.Tours[0].imageEntities[0].image,
-            price: widget.Tours==null? 0 : widget.Tours[0].priceEntities[0].price,
-            id: widget.Tours==null? 0 : widget.Tours[0].id,
+            name: widget.Tours == null ? 'Loading...' : widget.Tours[0].name,
+            date: widget.Tours == null
+                ? 'Loading...'
+                : widget.Tours[0].startTime.substring(0, 10),
+            assetName: widget.Tours == null
+                ? 'Loading...'
+                : widget.Tours[0].imageEntities[0].image,
+            price: widget.Tours == null
+                ? 0
+                : widget.Tours[0].priceEntities[0].price,
+            id: widget.Tours == null ? 0 : widget.Tours[0].id,
             offset: pageOffset,
           ),
           SlidingCard(
-            name: widget.Tours==null? 'Loading...' : widget.Tours[1].name,
-            date: widget.Tours==null? 'Loading...' : widget.Tours[1].startTime,
-            assetName: widget.Tours==null? 'Loading...' : widget.Tours[1].imageEntities[0].image,
-            price: widget.Tours==null? 0 : widget.Tours[1].priceEntities[0].price,
+            name: widget.Tours == null ? 'Loading...' : widget.Tours[1].name,
+            date: widget.Tours == null
+                ? 'Loading...'
+                : widget.Tours[1].startTime.substring(0, 10),
+            assetName: widget.Tours == null
+                ? 'Loading...'
+                : widget.Tours[1].imageEntities[0].image,
+            price: widget.Tours == null
+                ? 0
+                : widget.Tours[1].priceEntities[0].price,
             offset: pageOffset - 1,
-            id: widget.Tours==null? 0 : widget.Tours[1].id,
+            id: widget.Tours == null ? 0 : widget.Tours[1].id,
+          ),
+          SlidingCard(
+            name: widget.Tours == null ? 'Loading...' : widget.Tours[2].name,
+            date: widget.Tours == null
+                ? 'Loading...'
+                : widget.Tours[2].startTime.substring(0, 10),
+            assetName: widget.Tours == null
+                ? 'Loading...'
+                : widget.Tours[2].imageEntities[0].image,
+            price: widget.Tours == null
+                ? 0
+                : widget.Tours[2].priceEntities[0].price,
+            offset: pageOffset - 2,
+            id: widget.Tours == null ? 0 : widget.Tours[2].id,
+          ),
+          SlidingCard(
+            name: widget.Tours == null ? 'Loading...' : widget.Tours[3].name,
+            date: widget.Tours == null
+                ? 'Loading...'
+                : widget.Tours[3].startTime.substring(0, 10),
+            assetName: widget.Tours == null
+                ? 'Loading...'
+                : widget.Tours[3].imageEntities[0].image,
+            price: widget.Tours == null
+                ? 0
+                : widget.Tours[3].priceEntities[0].price,
+            offset: pageOffset - 3,
+            id: widget.Tours == null ? 0 : widget.Tours[3].id,
+          ),
+          SlidingCard(
+            name: widget.Tours == null ? 'Loading...' : widget.Tours[4].name,
+            date: widget.Tours == null
+                ? 'Loading...'
+                : widget.Tours[4].startTime.substring(0, 10),
+            assetName: widget.Tours == null
+                ? 'Loading...'
+                : widget.Tours[4].imageEntities[0].image,
+            price: widget.Tours == null
+                ? 0
+                : widget.Tours[4].priceEntities[0].price,
+            offset: pageOffset - 4,
+            id: widget.Tours == null ? 0 : widget.Tours[4].id,
+          ),
+          SlidingCard(
+            name: widget.Tours == null ? 'Loading...' : widget.Tours[5].name,
+            date: widget.Tours == null
+                ? 'Loading...'
+                : widget.Tours[5].startTime.substring(0, 10),
+            assetName: widget.Tours == null
+                ? 'Loading...'
+                : widget.Tours[5].imageEntities[0].image,
+            price: widget.Tours == null
+                ? 0
+                : widget.Tours[5].priceEntities[0].price,
+            offset: pageOffset - 5,
+            id: widget.Tours == null ? 0 : widget.Tours[5].id,
+          ),
+          SlidingCard(
+            name: widget.Tours == null ? 'Loading...' : widget.Tours[6].name,
+            date: widget.Tours == null
+                ? 'Loading...'
+                : widget.Tours[6].startTime.substring(0, 10),
+            assetName: widget.Tours == null
+                ? 'Loading...'
+                : widget.Tours[6].imageEntities[0].image,
+            price: widget.Tours == null
+                ? 0
+                : widget.Tours[6].priceEntities[0].price,
+            offset: pageOffset - 6,
+            id: widget.Tours == null ? 0 : widget.Tours[6].id,
           ),
         ],
       ),
@@ -192,6 +286,7 @@ class SlidingCard extends StatelessWidget {
   final double offset;
   final int price;
   final int id;
+
   const SlidingCard({
     Key key,
     @required this.name,
@@ -246,13 +341,14 @@ class CardContent extends StatelessWidget {
   final int price;
   final int id;
   final oCcy = new NumberFormat("#,### đ", "en_US");
-   CardContent(
+
+  CardContent(
       {Key key,
       @required this.name,
       @required this.date,
       @required this.offset,
       @required this.price,
-        @required this.id})
+      @required this.id})
       : super(key: key);
 
   @override
@@ -280,12 +376,14 @@ class CardContent extends StatelessWidget {
               Transform.translate(
                 offset: Offset(48 * offset, 0),
                 child: RaisedButton(
-                  onPressed: () {Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => DetailedTourScreen(id),
-                    ),
-                  );},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => DetailedTourScreen(id),
+                      ),
+                    );
+                  },
                   color: Color(0xFF162A49),
                   child: Transform.translate(
                     offset: Offset(24 * offset, 0),
@@ -295,7 +393,6 @@ class CardContent extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(32),
                   ),
-
                 ),
               ),
               Spacer(),
