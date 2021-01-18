@@ -6,23 +6,32 @@ import 'package:mobile/Screens/AboutScreen.dart';
 import 'package:mobile/Screens/LoginScreen.dart';
 import 'package:mobile/Utils/Constants.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:mobile/globals.dart' as globals;
 class AccountScreen extends StatefulWidget {
-  final LoginResponse loginResponse;
-  AccountScreen({this.loginResponse});
+  final LoginResponse loginResponse=globals.loginResponse;
+  final bool isLogin=globals.isLoggedIn;
+  AccountScreen();
+
   @override
-  _MyAppState createState() => _MyAppState();
+  _MyAppState createState() => _MyAppState(loginResponse: loginResponse);
 }
 
 class _MyAppState extends State<AccountScreen> {
-
   final LoginResponse loginResponse;
-  String _name="";
-  _MyAppState({this.loginResponse}){
-    if(loginResponse!=null)
-      _name=loginResponse.name;
-  }
+  String _name;
 
+  _MyAppState({this.loginResponse});
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if(globals.isLoggedIn){
+     _name = loginResponse.name;}
+    else{
+      _name="";
+    }
+    //_name=loginResponse.name;
+  }
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -207,12 +216,15 @@ class _MyAppState extends State<AccountScreen> {
                   Color.fromARGB(255, 51, 153, 255),
                   Color.fromARGB(255, 85, 172, 238)
                 ])),
-        child: Text(
-          'Đăng nhập',
-          style: TextStyle(
-              decoration: TextDecoration.none,
-              fontSize: 12,
-              color: Colors.white),
+        child: Visibility(
+          visible: !globals.isLoggedIn,
+          child: Text(
+            'Đăng nhập',
+            style: TextStyle(
+                decoration: TextDecoration.none,
+                fontSize: 12,
+                color: Colors.white),
+          ),
         ),
       ),
     );
@@ -235,7 +247,6 @@ class CustomDialog extends StatelessWidget {
       child: dialogContent(context),
     );
   }
-
 
   dialogContent(BuildContext context) {
     double a = 10;

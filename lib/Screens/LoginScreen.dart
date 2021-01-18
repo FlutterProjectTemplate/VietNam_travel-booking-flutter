@@ -10,7 +10,7 @@ import 'package:progress_dialog/progress_dialog.dart';
 
 import 'ForgotPasswordScreen.dart';
 import 'MainScreen.dart';
-
+import 'package:mobile/globals.dart' as globals;
 class LoginScreen extends StatefulWidget {
   final BuildContext previousContext;
 
@@ -24,7 +24,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final BuildContext previousContext;
 
   _LoginScreenState(this.previousContext);
-
   ProgressDialog _progressDialog;
   String _username;
   String _password;
@@ -312,13 +311,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void login() {
     LoginRequest loginRequest =
-        new LoginRequest(username: _username, password: _password);
+        new LoginRequest(username: _username.trim(), password: _password.trim());
     _progressDialog.show();
     _futureLoginResponse = Api.login(loginRequest).then((value) {
-      Fluttertoast.showToast(msg: value.name);
       _progressDialog.hide();
+      globals.loginResponse=value;
+      globals.isLoggedIn=true;
+      // Fluttertoast.showToast(msg: value.name);
       // Navigator.pop(previousContext);
-      // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MainScreen()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MainScreen()));
     }, onError: (e) {
       _progressDialog.hide();
       showDialog(
@@ -356,14 +357,16 @@ class AdvanceCustomAlert extends StatelessWidget {
           children: [
             Container(
               height: 200,
-
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(10, 70, 10, 10),
                 child: Column(
                   children: [
-                   // Text('Warning !!!', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
+                    Text('Lỗi', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,color: Colors.red),),
                     SizedBox(height: 5,),
-                    Text(message, style: TextStyle(fontSize: 20),),
+                    Text(
+                      message,
+                      style: TextStyle(fontSize: 20),
+                    ),
                     SizedBox(height: 20,),
                     RaisedButton(onPressed: () {
                       Navigator.of(context).pop();

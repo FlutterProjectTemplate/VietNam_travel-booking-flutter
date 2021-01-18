@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mobile/Models/LoginResponse.dart';
 import 'package:mobile/Screens/AccountScreen.dart';
 import 'package:mobile/Screens/CommunityScreen.dart';
@@ -9,9 +10,7 @@ import 'package:mobile/Screens/PostScreen.dart';
 import 'TourListScreen.dart';
 
 class MainScreen extends StatefulWidget {
-  final LoginResponse loginResponse;
-
-  MainScreen({this.loginResponse});
+  MainScreen();
 
   @override
   State<StatefulWidget> createState() => _MainScreenState();
@@ -24,7 +23,12 @@ class _MainScreenState extends State<MainScreen> {
   final LoginResponse loginResponse;
 
   _MainScreenState({this.loginResponse});
-
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Fluttertoast.showToast(msg: loginResponse==null?"":loginResponse.name);
+  }
   void _onItemTapped(int index) {
     if (index != _lastSelectedIndex) {
       setState(() {
@@ -49,9 +53,6 @@ class _MainScreenState extends State<MainScreen> {
       case 2:
         return TourListScreen(null);
       case 3:
-        if (loginResponse != null) {
-          return AccountScreen(loginResponse: loginResponse);
-        }
         return AccountScreen();
         break;
       default:

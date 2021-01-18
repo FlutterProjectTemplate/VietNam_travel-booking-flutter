@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/Screens/AboutScreen.dart';
-import 'package:mobile/Screens/AccountScreen.dart';
 import 'package:mobile/Screens/SplashScreen.dart';
-import 'package:mobile/Screens/HomeScreen.dart';
-import 'package:mobile/Screens/LoginScreen.dart';
-import 'package:mobile/Screens/ProfileScreen.dart';
-import 'package:mobile/Screens/SignUpScreen.dart';
-
-import 'Utils/Constants.dart';
-
+import 'globals.dart' as globals;
 void main() {
+  globals.isLoggedIn = false;
   runApp(MyApp());
 }
 
