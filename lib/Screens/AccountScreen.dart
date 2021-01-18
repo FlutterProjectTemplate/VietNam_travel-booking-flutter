@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
-import 'package:mobile/Components/CustomAppBar.dart';
 import 'package:mobile/Models/LoginResponse.dart';
 import 'package:mobile/Screens/AboutScreen.dart';
 import 'package:mobile/Screens/LoginScreen.dart';
-import 'package:mobile/Utils/Constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:mobile/globals.dart' as globals;
+
+import 'MainScreen.dart';
+
 class AccountScreen extends StatefulWidget {
-  final LoginResponse loginResponse=globals.loginResponse;
-  final bool isLogin=globals.isLoggedIn;
+  final LoginResponse loginResponse = globals.loginResponse;
+  final bool isLogin = globals.isLoggedIn;
+
   AccountScreen();
 
   @override
@@ -21,17 +22,19 @@ class _MyAppState extends State<AccountScreen> {
   String _name;
 
   _MyAppState({this.loginResponse});
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    if(globals.isLoggedIn){
-     _name = loginResponse.name;}
-    else{
-      _name="";
+    if (globals.isLoggedIn) {
+      _name = loginResponse.name;
+    } else {
+      _name = "";
     }
     //_name=loginResponse.name;
   }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -198,10 +201,13 @@ class _MyAppState extends State<AccountScreen> {
   Widget _loginButton() {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => LoginScreen(
-                  previousContext: context,
-                )));
+        if (globals.isLoggedIn){
+          _logout();
+        }else
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => LoginScreen(
+                    previousContext: context,
+                  )));
       },
       child: Container(
         width: MediaQuery.of(context).size.width / 4,
@@ -216,18 +222,20 @@ class _MyAppState extends State<AccountScreen> {
                   Color.fromARGB(255, 51, 153, 255),
                   Color.fromARGB(255, 85, 172, 238)
                 ])),
-        child: Visibility(
-          visible: !globals.isLoggedIn,
-          child: Text(
-            'Đăng nhập',
-            style: TextStyle(
-                decoration: TextDecoration.none,
-                fontSize: 12,
-                color: Colors.white),
-          ),
+        child: Text(
+          globals.isLoggedIn ? "Đăng xuất" : "Đăng Nhập",
+          style: TextStyle(
+              decoration: TextDecoration.none,
+              fontSize: 12,
+              color: Colors.white),
         ),
       ),
     );
+  }
+  void _logout(){
+    globals.loginResponse=null;
+    globals.isLoggedIn=false;
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MainScreen()));
   }
 }
 
@@ -316,4 +324,5 @@ class CustomDialog extends StatelessWidget {
       ],
     );
   }
+
 }

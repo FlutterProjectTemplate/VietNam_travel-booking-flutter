@@ -23,12 +23,6 @@ class _MainScreenState extends State<MainScreen> {
   final LoginResponse loginResponse;
 
   _MainScreenState({this.loginResponse});
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    Fluttertoast.showToast(msg: loginResponse==null?"":loginResponse.name);
-  }
   void _onItemTapped(int index) {
     if (index != _lastSelectedIndex) {
       setState(() {

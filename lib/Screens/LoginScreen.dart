@@ -28,7 +28,6 @@ class _LoginScreenState extends State<LoginScreen> {
   String _username;
   String _password;
   Future<LoginResponse> _futureLoginResponse;
-  Future<dynamic> _future;
 
   @override
   void initState() {
@@ -318,7 +317,7 @@ class _LoginScreenState extends State<LoginScreen> {
       globals.loginResponse=value;
       globals.isLoggedIn=true;
       // Fluttertoast.showToast(msg: value.name);
-      // Navigator.pop(previousContext);
+      Navigator.pop(previousContext);
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MainScreen()));
     }, onError: (e) {
       _progressDialog.hide();
