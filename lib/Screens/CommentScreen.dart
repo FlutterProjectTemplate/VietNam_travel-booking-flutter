@@ -335,6 +335,7 @@ class _CommentScreenState extends State<CommentScreen> {
                       size: 25.0,
                       color: Colors.white,
                     ),
+
                   ),
                 ),
               ),

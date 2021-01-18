@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 class Constants {
   static String appName = "Foody Bite";
 
@@ -42,7 +43,7 @@ class Constants {
       ),
     ),
   );
-
+  static final oCcy = new NumberFormat("#,### đ", "en_US");
   static ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
     backgroundColor: darkBG,

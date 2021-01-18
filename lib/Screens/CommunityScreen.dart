@@ -1,11 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:mobile/Models/Post.dart';
 import 'package:mobile/Network/Api.dart';
 import 'package:mobile/Screens/CommentScreen.dart';
-import 'package:mobile/Screens/LoginScreen.dart';
-import 'package:mobile/Screens/SearchScreen.dart';
 import 'package:mobile/globals.dart' as globals;
 import 'PostScreen.dart';
 
@@ -15,111 +12,74 @@ class CommunityScreen extends StatefulWidget {
 }
 
 class _CommunityScreenState extends State<CommunityScreen> {
-  List<Post> posts;
   @override
   void initState() {
     super.initState();
-    Api.getPosts().then((value) {
+    globals.futurePost = Api.getPosts().then((value) {
       setState(() {
-        posts=value;
+        globals.posts = value;
       });
     });
   }
+
   static List getDummyList(int length) {
     List list = List.generate(length, (i) {
       return "Item ${i + 1}";
     });
     return list;
   }
+
   @override
   Widget build(BuildContext context) {
-    List items = getDummyList(posts==null? 0 : posts.length);
-    if(globals.isLoggedIn==false){
-      return Center(
-        child: Text("Vui lòng đăng nhập để sử dụng tính năng này",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      );
-    } else
+    List items = getDummyList(globals.posts == null ? 0 : globals.posts.length);
+    // if (globals.isLoggedIn == false) {
+    //   return Center(
+    //     child: Text(
+    //       "Vui lòng đăng nhập để sử dụng tính năng này",
+    //       style: TextStyle(
+    //         fontSize: 20,
+    //         fontWeight: FontWeight.bold,
+    //       ),
+    //     ),
+    //   );
+    // } else
     return Scaffold(
-      appBar: AppBar(
-        title: Container(
-            margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
-            decoration: BoxDecoration(
-              color: Color.fromARGB(50, 255, 255, 255),
-              borderRadius: BorderRadius.all(Radius.circular(22.0)),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      body: Column(children: <Widget>[
+        SafeArea(
+          child: PostMenu(),
+        ),
+        Expanded(
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Expanded(
-                    flex: 1,
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Địa điểm muốn khám phá",
-                        hintStyle: TextStyle(color: Colors.white),
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => SearchScreen(),
-                          ),
-                        );
-                      },
-                    )),
-                Expanded(
-                    flex: 0,
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.search, color: Colors.white),
-                      padding: EdgeInsets.symmetric(horizontal: 5.0),
-                    ))
-              ],
-            )),
-        backgroundColor: Colors.orange,
-      ),
-      body:
-        // decoration: BoxDecoration(
-        //   borderRadius: BorderRadius.circular(20),
-        //   color: Colors.white,
-        // ),
-        Column(children: <Widget>[
-          SafeArea(
-            child: PostMenu(),
-          ),
-          Expanded(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Expanded(
-                    child: SizedBox(
-                      height: 200.0,
-                      child:  ListView.builder(
-                          itemCount: items.length,
-                          itemBuilder: (BuildContext context, int index) =>
-                              CardPost(context,index),
-                       ),
-
-                    ),
+                  child: SizedBox(
+                    height: 200.0,
+                    child: globals.tours != null
+                        ? ListView.builder(
+                            itemCount: items.length,
+                            itemBuilder: (BuildContext context, int index) =>
+                                CardPost(context, index),
+                          )
+                        : Center(child: CircularProgressIndicator()),
                   ),
-                ]),
-          ),
-]),
+                ),
+              ]),
+        ),
+      ]),
     );
   }
+
   Widget CardPost(BuildContext context, int index) {
-    final Post post = posts[index];
+    final Post post = globals.posts[index];
     DateTime date;
     String formattedDate;
-    if(post!=null) {
-      date=DateTime.parse(post.time);
-      formattedDate = "Lúc ${date.hour.toString()}:${date.minute.toString()} ngày ${date.day.toString().padLeft(2,'0')}-${date.month.toString().padLeft(2,'0')}-${date.year.toString()} ";
-    } else formattedDate="0";
+    if (post != null) {
+      date = DateTime.parse(post.time);
+      formattedDate =
+          "Lúc ${date.hour.toString()}:${date.minute.toString()} ngày ${date.day.toString().padLeft(2, '0')}-${date.month.toString().padLeft(2, '0')}-${date.year.toString()} ";
+    } else
+      formattedDate = "0";
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
       child: Container(
@@ -130,7 +90,6 @@ class _CommunityScreenState extends State<CommunityScreen> {
           borderRadius: BorderRadius.circular(25.0),
         ),
         child: Column(
-
           children: <Widget>[
             Padding(
               padding: EdgeInsets.symmetric(vertical: 10.0),
@@ -155,14 +114,16 @@ class _CommunityScreenState extends State<CommunityScreen> {
                           child: Image(
                             height: 50.0,
                             width: 50.0,
-                            image: NetworkImage(post==null? 'Loading...' : post.imageEntities[0].image),
+                            image: NetworkImage(post == null
+                                ? 'Loading...'
+                                : post.imageEntities[0].image),
                             fit: BoxFit.cover,
                           ),
                         ),
                       ),
                     ),
                     title: Text(
-                      "${ post==null ? 'Loading...' : post.nameUser}",
+                      "${post == null ? 'Loading...' : post.nameUser}",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
@@ -174,13 +135,12 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       onPressed: () => print('More'),
                     ),
                   ),
-
                   Container(
-                    margin: const EdgeInsets.only(right: 250.0,top: 20),
-                    child: Text("${post.content==null ? '' : post.content}",
+                    margin: const EdgeInsets.only(right: 250.0, top: 20),
+                    child: Text(
+                      "${post.content == null ? '' : post.content}",
                     ),
                   ),
-
                   InkWell(
                     onDoubleTap: () => print('Like post'),
                     onTap: () {
@@ -192,7 +152,6 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       );
                     },
                     child: Container(
-
                       margin: EdgeInsets.all(10.0),
                       width: double.infinity,
                       height: 250.0,
@@ -206,7 +165,9 @@ class _CommunityScreenState extends State<CommunityScreen> {
                           ),
                         ],
                         image: DecorationImage(
-                          image: NetworkImage(post==null? 'Loading...' : post.imageEntities[0].image),
+                          image: NetworkImage(post == null
+                              ? 'Loading...'
+                              : post.imageEntities[0].image),
                           fit: BoxFit.fitWidth,
                         ),
                       ),
@@ -227,7 +188,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                   onPressed: () => print('Like post'),
                                 ),
                                 Text(
-                                  "${post==null? '0' : post.amount_like}",
+                                  "${post == null ? '0' : post.amount_like}",
                                   style: TextStyle(
                                     fontSize: 14.0,
                                     fontWeight: FontWeight.w600,
@@ -244,7 +205,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                   onPressed: () {},
                                 ),
                                 Text(
-                                  "${post==null? '0' : post.amount_comment}",
+                                  "${post == null ? '0' : post.amount_comment}",
                                   style: TextStyle(
                                     fontSize: 14.0,
                                     fontWeight: FontWeight.w600,
@@ -270,9 +231,9 @@ class _CommunityScreenState extends State<CommunityScreen> {
       ),
     );
   }
+
   Widget PostMenu() {
     return Card(
-
       child: Container(
         padding: EdgeInsets.all(16.0),
         decoration: BoxDecoration(
@@ -280,8 +241,6 @@ class _CommunityScreenState extends State<CommunityScreen> {
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(30.0),
               bottomRight: Radius.circular(30.0),
-              topLeft: Radius.circular(30.0),
-              topRight: Radius.circular(30.0),
             )),
         child: Column(
           children: <Widget>[
@@ -295,7 +254,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                     ),
                     SizedBox(width: 10.0),
                     Text(
-                      "Xin chào ${globals.isLoggedIn==false ? "" : globals.loginResponse.name}",
+                      "Xin chào ${globals.isLoggedIn == false ? "" : globals.loginResponse.name}",
                       style: TextStyle(color: Colors.white),
                     ),
                   ],
@@ -311,6 +270,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
             ),
             SizedBox(height: 30.0),
             TextField(
+              readOnly: true,
               decoration: InputDecoration(
                   hintText: "Bạn đang nghĩ gì",
                   fillColor: Colors.white,
@@ -321,14 +281,12 @@ class _CommunityScreenState extends State<CommunityScreen> {
                     borderSide: BorderSide(color: Colors.transparent),
                   ),
                   contentPadding:
-                  EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0)),
+                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0)),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => PostScreen(),
-                  ),
-                );
+                if (globals.isLoggedIn)
+                  _create();
+                else
+                  _requireLogin();
               },
             )
           ],
@@ -336,9 +294,87 @@ class _CommunityScreenState extends State<CommunityScreen> {
       ),
     );
   }
+
+  void _create() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => PostScreen(),
+      ),
+    );
+  }
+
+  void _requireLogin() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AdvanceCustomAlert(
+          message: "Vui lòng đăng nhập để sử dụng tính năng này"),
+    );
+  }
 }
 
+class AdvanceCustomAlert extends StatelessWidget {
+  final String message;
 
+  const AdvanceCustomAlert({Key key, this.message}) : super(key: key);
 
-
-
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+        child: Stack(
+          overflow: Overflow.visible,
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              height: 250,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 70, 10, 10),
+                child: Column(
+                  children: [
+                    Text(
+                      'Lỗi',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: Colors.red),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      message,
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    RaisedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      color: Color(0xfff7892b),
+                      child: Text(
+                        'Okay',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+                top: -60,
+                child: CircleAvatar(
+                  backgroundColor: Colors.redAccent,
+                  radius: 60,
+                  child: Icon(
+                    Icons.assistant_photo,
+                    color: Colors.white,
+                    size: 50,
+                  ),
+                )),
+          ],
+        ));
+  }
+}
