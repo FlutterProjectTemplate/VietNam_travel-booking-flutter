@@ -9,4 +9,14 @@ class ImageEntities{
       image: json['image'],
     );
   }
+  Map<String, dynamic> toJson() => {'id': id,'image':image};
+}
+class ImageList {
+  ImageList(this.images);
+
+  List<ImageEntities> images;
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'imageEntites': images,
+  };
 }

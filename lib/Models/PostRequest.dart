@@ -1,13 +1,16 @@
+import 'dart:convert';
+
 import 'Image.dart';
 
 class PostRequest{
   final String content;
   final String time;
-  final List<ImageEntities> imageEntities;
+  final String imageEntities;
 
   PostRequest({this.content, this.imageEntities,this.time});
 
   factory PostRequest.fromJson(Map<String, dynamic> json) {
+
     return PostRequest(
       content: json['content'],
       time: json['time'],
@@ -17,7 +20,7 @@ class PostRequest{
   Map toJson(){
     return{
       "content":content,
-      "imageEntities":imageEntities,
+      "imageEntities": [ {"image":imageEntities}],
       "time":time,
     };
   }

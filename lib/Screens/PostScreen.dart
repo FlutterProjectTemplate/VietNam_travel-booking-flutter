@@ -1,10 +1,18 @@
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:mobile/Models/Image.dart';
 import 'package:mobile/Models/Post.dart';
+import 'package:mobile/Models/PostRequest.dart';
 import 'package:mobile/Network/Api.dart';
 import 'package:mobile/Screens/CommunityScreen.dart';
 import 'package:mobile/globals.dart' as globals;
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+
+import 'package:progress_dialog/progress_dialog.dart';
 
 class PostScreen extends StatefulWidget {
   @override
@@ -17,10 +25,12 @@ class _PostScreenState extends State<PostScreen> {
   List navs = ["Trang chủ", "Cộng đồng", "Yêu thích"];
   int _selectedIndex = 0;
   File _image;
-  final picker = ImagePicker();
+  String requestBody ;
+  List<ImageEntities> images;
 
-  Future getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
+  final picker = ImagePicker();
+  void getImage() async {
+    var pickedFile = await picker.getImage(source: ImageSource.gallery);
 
     setState(() {
       if (pickedFile != null) {
@@ -30,7 +40,11 @@ class _PostScreenState extends State<PostScreen> {
       }
     });
   }
-
+  final _contentController = TextEditingController();
+  void dispose() {
+    _contentController.dispose();
+    super.dispose();
+  }
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
@@ -48,18 +62,20 @@ class _PostScreenState extends State<PostScreen> {
     ),
   ];
   List<Post> posts;
-  void _onItemTapped(int index) {
+  void load() {
     setState(() {
-      _selectedIndex = index;
+      images[0]=ImageEntities(id:5,image: "hello");
     });
   }
-
+  ProgressDialog _progressDialog;
   @override
   void initState() {
     super.initState();
+    load();
     Api.getPosts().then((value) {
       setState(() {
         posts = value;
+
       });
     });
   }
@@ -67,24 +83,10 @@ class _PostScreenState extends State<PostScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Anime App",
-      theme: ThemeData(fontFamily: "Open Sans"),
-      debugShowCheckedModeBanner: false,
-      home: Column(
-        children: [
-          Center(
-            child: _image == null
-                ? Text('No image selected.')
-                : Image.file(_image),
-          ),
-          FloatingActionButton(
-            onPressed: getImage,
-            tooltip: 'Pick Image',
-            child: Icon(Icons.add_a_photo),
-          ),
-        ],
-      ),
-    );
+        title: "Anime App",
+        theme: ThemeData(fontFamily: "Open Sans"),
+        debugShowCheckedModeBanner: false,
+        home: AddPost(context));
   }
 
   Widget AddPost(BuildContext context) {
@@ -121,7 +123,7 @@ class _PostScreenState extends State<PostScreen> {
                             );
                           }),
                       Text(
-                        "ĐĂNG BÀI",
+                        "Đăng bài",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Padding(
@@ -155,6 +157,7 @@ class _PostScreenState extends State<PostScreen> {
                             Padding(
                                 padding: const EdgeInsets.all(16.0),
                                 child: TextField(
+                                  controller: _contentController,
                                   decoration: InputDecoration(
                                       hintText: "Hãy viết gì đó",
                                       fillColor: Colors.white,
@@ -170,22 +173,15 @@ class _PostScreenState extends State<PostScreen> {
                                           horizontal: 16.0, vertical: 16.0)),
                                 )),
                             Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                      hintText: "Thêm caption",
-                                      fillColor: Colors.white,
-                                      filled: true,
-                                      suffixIcon: Icon(Icons.more_horiz),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(20.0),
-                                        borderSide: BorderSide(
-                                            color: Colors.transparent),
-                                      ),
-                                      contentPadding: EdgeInsets.symmetric(
-                                          horizontal: 16.0, vertical: 16.0)),
-                                ))
+                              padding: const EdgeInsets.all(16.0),
+                              child: IconButton(
+                                icon: Icon(Icons.send),
+                                highlightColor: Colors.grey,
+                                onPressed: () {
+                                  post();
+                                },
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -193,8 +189,30 @@ class _PostScreenState extends State<PostScreen> {
                   ),
                   Card(
                     margin: EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Container(
-                      height: 200,
+                    child: SingleChildScrollView(
+                      child: Container(
+                        padding: EdgeInsets.only(top: 20, bottom: 20),
+                        decoration: BoxDecoration(
+                          color: Colors.orangeAccent.shade100,
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        child: Column(
+                          children: [
+                            Center(
+                              child: _image == null
+                                  ? Text('Chọn Ảnh')
+                                  : Image.file(_image),
+                            ),
+                            _image != null
+                                ? Text('')
+                                : FloatingActionButton(
+                                    onPressed: getImage,
+                                    tooltip: 'Pick Image',
+                                    child: Icon(Icons.add_a_photo),
+                                  )
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -205,4 +223,82 @@ class _PostScreenState extends State<PostScreen> {
       ),
     );
   }
+  void post() {
+    final String requestBody = json.encoder.convert(images);
+
+    var now = new DateTime.now();
+    var dateFormatted = DateFormat("yyyy-MM-ddTHH:mm:ss").format(now);
+    print(dateFormatted);
+
+    PostRequest postRequest =
+    new PostRequest(content: _contentController.text.trim(), time: dateFormatted,imageEntities: null);
+    Api.post(postRequest).then((value) {
+      _progressDialog.hide();
+      // Fluttertoast.showToast(msg: value.name);
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => CommunityScreen()));
+    }, onError: (e) {
+      _progressDialog.hide();
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => AdvanceCustomAlert(message: e.toString().substring(11)),
+      );
+      //   dialogContent(context, e.toString().substring(11));
+    });
+  }
 }
+class AdvanceCustomAlert extends StatelessWidget {
+  final String message;
+
+  const AdvanceCustomAlert({Key key, this.message}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0)
+        ),
+        child: Stack(
+          overflow: Overflow.visible,
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              height: 200,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 70, 10, 10),
+                child: Column(
+                  children: [
+                    Text('Lỗi', style: TextStyle(fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Colors.red),),
+                    SizedBox(height: 5,),
+                    Text(
+                      message,
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    SizedBox(height: 20,),
+                    RaisedButton(onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                      color: Color(0xfff7892b),
+                      child: Text(
+                        'Okay', style: TextStyle(color: Colors.white),),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+                top: -60,
+                child: CircleAvatar(
+                  backgroundColor: Colors.redAccent,
+                  radius: 60,
+                  child: Icon(
+                    Icons.assistant_photo, color: Colors.white, size: 50,),
+                )
+            ),
+          ],
+        )
+    );
+  }
+}
+
