@@ -26,7 +26,10 @@ class _TourBookingState extends State<TourBookingScreen> {
   List<int> listPrice = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
   int _totalNumberOfPeople = 0;
   int _totalPrice = 0;
-
+  String _name;
+  String _email;
+  String _address;
+  String _phone;
   _TourBookingState(this.tour);
 
   @override

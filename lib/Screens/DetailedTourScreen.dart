@@ -67,21 +67,37 @@ class _DetailedTourScreenState extends State<DetailedTourScreen> {
                 height: 36,
               ),
               About(tour),
-              Attrabute(tour),
+              Padding(padding: EdgeInsets.only(right: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text("Yêu thích",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.red),),
+                  IconButton(
+                    alignment: Alignment.center,
+                    color: Colors.red,
+                    icon: Icon(Icons.favorite_border),
+                    onPressed: () {
+                      setState(() {});
+                    },
+                  ),
+                ],
+              ),),
+              // Attrabute(tour),
               BookNowButton(tour),
             ],
           ),
         ),
       );
   }
-
 }
 
 class About extends StatelessWidget {
   final Tour tour;
   List<Widget> textWidgetList = List<Widget>();
 
-  About(@required this.tour,);
+  About(
+    @required this.tour,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -93,19 +109,19 @@ class About extends StatelessWidget {
     }
     for (int i = 0; i < legth; i++) {
       textWidgetList.add(
-        Container(
-          child: Align(
-            alignment: Alignment.topLeft,
-              heightFactor: 2,
-              child: Wrap(
-                spacing: 20, // to apply margin in the main axis of the wrap
-                runSpacing: 20,
-                children: [
-                  Text(tour.scheduleEntities[i].time.substring(0, 10)+":"),
-                  Text(tour.scheduleEntities[i].place.toUpperCase()),
-                ],
-              ),
-          ),
+        Column(
+          // spacing: 20, // to apply margin in the main axis of the wrap
+          // runSpacing: 20,
+          children: [
+            Text(tour.scheduleEntities[i].time.substring(0, 10) + ":"),
+            Text(
+              tour.scheduleEntities[i].place.toUpperCase(),
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+          ],
         ),
       );
     }
@@ -155,7 +171,9 @@ class About extends StatelessWidget {
 class PlaceAndName extends StatelessWidget {
   final Tour tour;
 
-  const PlaceAndName(@required this.tour,);
+  const PlaceAndName(
+    @required this.tour,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -224,7 +242,9 @@ class PlaceAndName extends StatelessWidget {
 class Attrabute extends StatelessWidget {
   final Tour tour;
 
-  const Attrabute(@required this.tour,);
+  const Attrabute(
+    @required this.tour,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -279,11 +299,11 @@ class AttrabuteItem extends StatelessWidget {
           isSelect
               ? BoxShadow()
               : BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
-            spreadRadius: 1,
-            blurRadius: 7,
-            offset: Offset(0, 3),
-          ),
+                  color: Colors.grey.withOpacity(0.3),
+                  spreadRadius: 1,
+                  blurRadius: 7,
+                  offset: Offset(0, 3),
+                ),
         ],
       ),
       child: Image.asset(
@@ -297,7 +317,9 @@ class AttrabuteItem extends StatelessWidget {
 class BookNowButton extends StatelessWidget {
   final Tour tour;
 
-  const BookNowButton(@required this.tour,);
+  const BookNowButton(
+    @required this.tour,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -330,14 +352,14 @@ class BookNowButton extends StatelessWidget {
   }
 }
 
-
 enum TrimMode {
   Length,
   Line,
 }
 
 class ReadMoreText extends StatefulWidget {
-  const ReadMoreText(this.data, {
+  const ReadMoreText(
+    this.data, {
     Key key,
     this.trimExpandedText = ' read less',
     this.trimCollapsedText = ' ...read more',
@@ -351,8 +373,7 @@ class ReadMoreText extends StatefulWidget {
     this.locale,
     this.textScaleFactor,
     this.semanticsLabel,
-  })
-      : assert(data != null),
+  })  : assert(data != null),
         super(key: key);
 
   final String data;
@@ -402,17 +423,14 @@ class ReadMoreTextState extends State<ReadMoreText> {
         widget.locale ?? Localizations.localeOf(context, nullOk: true);
 
     final colorClickableText =
-        widget.colorClickableText ?? Theme
-            .of(context)
-            .accentColor;
+        widget.colorClickableText ?? Theme.of(context).accentColor;
 
     TextSpan link = TextSpan(
       text: _readMore ? widget.trimCollapsedText : widget.trimExpandedText,
       style: effectiveTextStyle.copyWith(
         color: colorClickableText,
       ),
-      recognizer: TapGestureRecognizer()
-        ..onTap = _onTapLink,
+      recognizer: TapGestureRecognizer()..onTap = _onTapLink,
     );
 
     Widget result = LayoutBuilder(
@@ -488,7 +506,7 @@ class ReadMoreTextState extends State<ReadMoreText> {
                 style: effectiveTextStyle,
                 text: _readMore
                     ? widget.data.substring(0, endIndex) +
-                    (linkLongerThanLine ? _kLineSeparator : '')
+                        (linkLongerThanLine ? _kLineSeparator : '')
                     : widget.data,
                 children: <TextSpan>[link],
               );
@@ -530,7 +548,9 @@ class ReadMoreTextState extends State<ReadMoreText> {
 }
 
 class ProductImages extends StatefulWidget {
-  ProductImages(@required this.tourImage,);
+  ProductImages(
+    @required this.tourImage,
+  );
 
   final Tour tourImage;
 
@@ -563,7 +583,7 @@ class _ProductImagesState extends State<ProductImages> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ...List.generate(widget.tourImage.imageEntities.length,
-                    (index) => buildSmallProductPreview(index)),
+                (index) => buildSmallProductPreview(index)),
           ],
         )
       ],
