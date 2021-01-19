@@ -22,27 +22,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
     });
   }
 
-  static List getDummyList(int length) {
-    List list = List.generate(length, (i) {
-      return "Item ${i + 1}";
-    });
-    return list;
-  }
-
   @override
   Widget build(BuildContext context) {
-    List items = getDummyList(globals.posts == null ? 0 : globals.posts.length);
-    // if (globals.isLoggedIn == false) {
-    //   return Center(
-    //     child: Text(
-    //       "Vui lòng đăng nhập để sử dụng tính năng này",
-    //       style: TextStyle(
-    //         fontSize: 20,
-    //         fontWeight: FontWeight.bold,
-    //       ),
-    //     ),
-    //   );
-    // } else
     return Scaffold(
       body: Column(children: <Widget>[
         SafeArea(
@@ -57,10 +38,11 @@ class _CommunityScreenState extends State<CommunityScreen> {
                     height: 200.0,
                     child: globals.tours != null
                         ? ListView.builder(
-                            itemCount: items.length,
-                            itemBuilder: (BuildContext context, int index) =>
-                                CardPost(context, index),
-                          )
+                      itemCount: 20,
+                      itemBuilder: (BuildContext context, int index) =>
+                         // Text(index.toString()),
+                           CardPost(context, index),
+                    )
                         : Center(child: CircularProgressIndicator()),
                   ),
                 ),
@@ -77,16 +59,18 @@ class _CommunityScreenState extends State<CommunityScreen> {
     if (post != null) {
       date = DateTime.parse(post.time);
       formattedDate =
-          "Lúc ${date.hour.toString()}:${date.minute.toString()} ngày ${date.day.toString().padLeft(2, '0')}-${date.month.toString().padLeft(2, '0')}-${date.year.toString()} ";
+      "Lúc ${date.hour.toString()}:${date.minute.toString()} ngày ${date.day
+          .toString().padLeft(2, '0')}-${date.month.toString().padLeft(
+          2, '0')}-${date.year.toString()} ";
     } else
       formattedDate = "0";
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
       child: Container(
         width: double.infinity,
-        height: 500.0,
+        height: (post.imageEntities.length==0)?200:post.imageEntities[0].image==null?200:500,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.black12,
           borderRadius: BorderRadius.circular(25.0),
         ),
         child: Column(
@@ -114,10 +98,9 @@ class _CommunityScreenState extends State<CommunityScreen> {
                           child: Image(
                             height: 50.0,
                             width: 50.0,
-                            image: NetworkImage(post == null
-                                ? 'Loading...'
-                                : post.imageEntities[0].image),
+                            image: AssetImage("images/user.png"),
                             fit: BoxFit.cover,
+                            color: Colors.white,
                           ),
                         ),
                       ),
@@ -141,38 +124,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       "${post.content == null ? '' : post.content}",
                     ),
                   ),
-                  InkWell(
-                    onDoubleTap: () => print('Like post'),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => CommentScreen(post.id),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      margin: EdgeInsets.all(10.0),
-                      width: double.infinity,
-                      height: 250.0,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black45,
-                            offset: Offset(0, 5),
-                            blurRadius: 8.0,
-                          ),
-                        ],
-                        image: DecorationImage(
-                          image: NetworkImage(post == null
-                              ? 'Loading...'
-                              : post.imageEntities[0].image),
-                          fit: BoxFit.fitWidth,
-                        ),
-                      ),
-                    ),
-                  ),
+                 _getImage(post),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.0),
                     child: Row(
@@ -232,6 +184,47 @@ class _CommunityScreenState extends State<CommunityScreen> {
     );
   }
 
+  Widget _getImage(Post post) {
+    if(post.imageEntities.length == 0)
+      return Text("");
+
+    if ( post.imageEntities[0].image==null)
+      return Text("");
+    else
+      return InkWell(
+        onDoubleTap: () => print('Like post'),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => CommentScreen(post.id),
+            ),
+          );
+        },
+        child: Container(
+          margin: EdgeInsets.all(10.0),
+          width: double.infinity,
+          height: 250.0,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(25.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black45,
+                offset: Offset(0, 5),
+                blurRadius: 8.0,
+              ),
+            ],
+            image: DecorationImage(
+              image: NetworkImage(post.imageEntities == null
+                  ? null
+                  : post.imageEntities[0].image),
+              fit: BoxFit.fitWidth,
+            ),
+          ),
+        ),
+      );
+  }
+
   Widget PostMenu() {
     return Card(
       child: Container(
@@ -254,7 +247,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
                     ),
                     SizedBox(width: 10.0),
                     Text(
-                      "Xin chào ${globals.isLoggedIn == false ? "" : globals.loginResponse.name}",
+                      "Xin chào ${globals.isLoggedIn == false ? "" : globals
+                          .loginResponse.name}",
                       style: TextStyle(color: Colors.white),
                     ),
                   ],
@@ -281,7 +275,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                     borderSide: BorderSide(color: Colors.transparent),
                   ),
                   contentPadding:
-                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0)),
+                  EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0)),
               onTap: () {
                 if (globals.isLoggedIn)
                   _create();
@@ -307,8 +301,9 @@ class _CommunityScreenState extends State<CommunityScreen> {
   void _requireLogin() {
     showDialog(
       context: context,
-      builder: (BuildContext context) => AdvanceCustomAlert(
-          message: "Vui lòng đăng nhập để sử dụng tính năng này"),
+      builder: (BuildContext context) =>
+          AdvanceCustomAlert(
+              message: "Vui lòng đăng nhập để sử dụng tính năng này"),
     );
   }
 }

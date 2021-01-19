@@ -31,13 +31,6 @@ class TourListScreen extends StatefulWidget {
 }
 
 class _TourListScreenState extends State<TourListScreen> {
-  final List<Trip> tripsList = [
-    Trip("Kỳ Co-Eo Gió", DateTime.now(), DateTime.now(), 2000000, "car","images/01.jpg"),
-    Trip("Đà Lạt-Nha Trang", DateTime.now(), DateTime.now(), 2900000, "car","images/02.jpg"),
-    Trip("Vũng Tàu", DateTime.now(), DateTime.now(), 2000000, "car","images/3.png"),
-    Trip("Đài Loan", DateTime.now(), DateTime.now(), 3000000, "plane","images/01.jpg"),
-    Trip("Scranton", DateTime.now(), DateTime.now(), 4000000, "car","images/01.jpg"),
-  ];
   Future<List<Tour>> _futureResponse;
   Future<dynamic> _future;
   List<Tour> Tours;
