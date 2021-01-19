@@ -2,85 +2,60 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/Components/CustomAppBar.dart';
+import 'package:mobile/Models/Price.dart';
 import 'package:mobile/Models/Tour.dart';
 import 'package:mobile/Network/Api.dart';
 import 'package:mobile/Screens/PaymentScreen.dart';
 import 'package:http/http.dart' as http;
-class TourBookingScreen extends StatefulWidget {
-  final int tourId;
 
-  TourBookingScreen(@required this.tourId) ;
+class TourBookingScreen extends StatefulWidget {
+  final Tour tour;
+
+  TourBookingScreen(@required this.tour);
+
   @override
-  State<StatefulWidget> createState() => _TourBookingState();
+  State<StatefulWidget> createState() => _TourBookingState(tour);
 }
 
 class _TourBookingState extends State<TourBookingScreen> {
-  int _adult = 0;
-  int _child = 0;
-  int _baby = 0;
+  final Tour tour;
+  List<int> listOrder = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  List<int> listPrice = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
   int _totalNumberOfPeople = 0;
   int _totalPrice = 0;
-  final adultController = TextEditingController(text: "0");
-  final childController = TextEditingController(text: "0");
-  final babyController = TextEditingController(text: "0");
+
+  _TourBookingState(this.tour);
 
   @override
   void dispose() {
-    // Clean up the controller when the widget is disposed.
-    adultController.dispose();
-    childController.dispose();
-    babyController.dispose();
     super.dispose();
   }
 
-  List<Tour> Tours;
-  changeText() {
-
+  changeText(index, text) {
     setState(() {
-      if(adultController.text==null) {
-        adultController.text="0";
-      } else {
-        _totalNumberOfPeople = int.parse(adultController.text)+int.parse(childController.text)+int.parse(babyController.text);
-        _totalPrice =
-            int.parse(adultController.text) * tour.priceEntities[0].price+int.parse(childController.text)*tour.priceEntities[1].price+int.parse(babyController.text)*tour.priceEntities[2].price;
-      }
+      listOrder[index] = int.parse(text);
     });
+  }
 
-  }
-  Tour tour;
-  Future fetchTour(int id) async {
-    http.Response response;
-    response= await http.get('https://travelbooking4uit.herokuapp.com/api/public/tour/$id');
-    if(response.statusCode==200){
-      setState(() {
-        tour=Tour.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
-      });
-    }
-  }
   final oCcy = new NumberFormat("#,### đ", "en_US");
+
   @override
   void initState() {
     super.initState();
-    Api.fetchTour(widget.tourId).then((value) {
-      setState(() {
-        tour=value;
-      });
-    });
-    log('data: ${adultController.text}');
+    for (int i = 0; i < tour.priceEntities.length; i++) {
+      listPrice[i] = tour.priceEntities[i].price;
+    }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(context, "Đặt tour", true),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(top: 10, left: 20, right: 20),
-        // decoration: BoxDecoration(
-        //   borderRadius: BorderRadius.circular(20),
-        //   color: Colors.white,
-        // ),
-
         child: Column(
           children: [
             _containerContact(),
@@ -172,87 +147,47 @@ class _TourBookingState extends State<TourBookingScreen> {
           SizedBox(
             height: 10,
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0),
-                child: Text(
-                  "Người lớn",
-                ),
+          ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: tour.priceEntities.length,
+              itemBuilder: (BuildContext context, int index) => _field(index)
+              // Text(index.toString()),
               ),
-              TextField(
-                onChanged: (text){
-                  changeText();
-                },
-                controller: adultController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                    hintText: "0",
-                    counterText: "${oCcy.format(tour==null? 0 : tour.priceEntities[0].price)}",
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)))),
-              ),
-            ],
-          ),
-          Row(
-            children: <Widget>[
-              Flexible(
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10.0),
-                    child: Text(
-                      "Trẻ em (hơn 1m3)",
-                    ),
-                  ),
-                  TextField(
-                    onChanged: (text){
-                      changeText();
-                    },
-                    keyboardType: TextInputType.number,
-                    controller: childController,
-                    decoration: InputDecoration(
-                        hintText: "0",
-                        counterText: "${oCcy.format(tour==null? 0 : tour.priceEntities[1].price)}",
-                        border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10.0)))),
-                  ),
-                ],
-              )),
-              SizedBox(
-                width: 10,
-              ),
-              Flexible(
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10.0),
-                    child: Text(
-                      "Trẻ em (dưới 1m3)",
-                    ),
-                  ),
-                  TextField(
-                    onChanged: (text){
-                      changeText();
-                    },
-                    controller: babyController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        hintText: "0",
-                        counterText: "${oCcy.format(tour==null? 0 : tour.priceEntities[2].price)}",
-                        border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10.0)))),
-                  ),
-                ],
-              )),
-            ],
-          ),
         ]);
+  }
+
+  Widget _field(index) {
+    PriceEntities priceEntities = tour.priceEntities[index];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: Text(
+            priceEntities.type,
+          ),
+        ),
+        TextField(
+          onChanged: (text) {
+            if (text != "")
+              listOrder[index] = int.parse(text);
+            else
+              listOrder[index] = 0;
+            _setSumPrice();
+            // Fluttertoast.showToast(msg: listOrder[index].toString()+"  null");
+          },
+          //      controller: adultController,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+              hintText: "0",
+              counterText:
+                  "${oCcy.format(priceEntities == null ? 0 : priceEntities.price)}",
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)))),
+        ),
+      ],
+    );
   }
 
   Widget _containerTotal() {
@@ -273,7 +208,6 @@ class _TourBookingState extends State<TourBookingScreen> {
                 ),
                 Container(
                   child: TextField(
-
                     readOnly: true,
                     decoration: InputDecoration(
                         hintText: "${_totalNumberOfPeople}",
@@ -302,14 +236,13 @@ class _TourBookingState extends State<TourBookingScreen> {
                   padding: const EdgeInsets.only(left: 10.0),
                   child: Text(
                     "Tổng tiền",
-
                   ),
                 ),
                 Container(
                   child: TextField(
                     readOnly: true,
                     decoration: InputDecoration(
-                        hintText: "${_totalPrice}",
+                        hintText: "${oCcy.format(_totalPrice)}",
                         suffixText: "đ",
                         border: OutlineInputBorder(
                             borderRadius:
@@ -350,9 +283,12 @@ class _TourBookingState extends State<TourBookingScreen> {
               colors: [Color(0xfffbb448), Color(0xfff7892b)])),
       child: new GestureDetector(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (_) => PaymentScreen(),
-          ),);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => PaymentScreen(),
+            ),
+          );
         },
         child: Text(
           'Đặt ngay',
@@ -360,5 +296,17 @@ class _TourBookingState extends State<TourBookingScreen> {
         ),
       ),
     );
+  }
+
+  void _setSumPrice() {
+    setState(() {
+      int t = 0;
+      _totalNumberOfPeople =
+          listOrder.reduce((value, element) => value + element);
+      for (int i = 0; i < listPrice.length; i++) {
+        t += (listPrice[i] * listOrder[i]);
+      }
+      _totalPrice = t;
+    });
   }
 }

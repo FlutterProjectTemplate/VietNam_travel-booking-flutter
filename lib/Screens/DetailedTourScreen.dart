@@ -310,7 +310,7 @@ class BookNowButton extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => TourBookingScreen(tour.id),
+              builder: (_) => TourBookingScreen(tour),
             ),
           );
         },
@@ -329,66 +329,7 @@ class BookNowButton extends StatelessWidget {
     );
   }
 }
-//
-// class CustomAppBar extends PreferredSize {
-//   final double rating;
-//
-//   CustomAppBar({@required this.rating});
-//
-//   @override
-//   // AppBar().preferredSize.height provide us the height that appy on our app bar
-//   Size get preferredSize => Size.fromHeight(AppBar().preferredSize.height);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return SafeArea(
-//       child: Padding(
-//         padding: EdgeInsets.symmetric(horizontal: 20),
-//         child: Row(
-//           children: [
-//             SizedBox(
-//               height: 40,
-//               width: 40,
-//               child: FlatButton(
-//                 shape: RoundedRectangleBorder(
-//                   borderRadius: BorderRadius.circular(60),
-//                 ),
-//                 color: Colors.white,
-//                 padding: EdgeInsets.zero,
-//                 onPressed: () => Navigator.pop(context),
-//                 child: WebsafeSvg.asset(
-//                   "images/Back ICon.svg",
-//                   height: 15,
-//                 ),
-//               ),
-//             ),
-//             Spacer(),
-//             Container(
-//               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
-//               decoration: BoxDecoration(
-//                 color: Colors.white,
-//                 borderRadius: BorderRadius.circular(14),
-//               ),
-//               child: Row(
-//                 children: [
-//                   Text(
-//                     "$rating",
-//                     style: const TextStyle(
-//                       fontSize: 14,
-//                       fontWeight: FontWeight.w600,
-//                     ),
-//                   ),
-//                   const SizedBox(width: 5),
-//                   WebsafeSvg.asset("image/star.svg"),
-//                 ],
-//               ),
-//             )
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+
 
 enum TrimMode {
   Length,
