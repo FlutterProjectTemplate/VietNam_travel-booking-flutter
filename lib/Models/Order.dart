@@ -75,13 +75,15 @@ class OrderResponse {
   final String urlImage;
   final Contact contact;
   final String orderDate;
+  final Date date;
+  final String place;
   OrderResponse(
       {this.id,this.orderDate,
         this.total_price,
       this.tourName,
       this.amount,
-      this.price,
-      this.urlImage,
+      this.price,this.date, this.place,
+        this.urlImage,
       this.contact});
 
   factory OrderResponse.fromJson(Map<String, dynamic> json) {
@@ -93,6 +95,8 @@ class OrderResponse {
         price: json['price'],
         urlImage: json['urlImage'],
         orderDate: json['orderDate'],
+        date: json['date'],
+        place: json['place'],
         contact: json['contact']);
 
   }

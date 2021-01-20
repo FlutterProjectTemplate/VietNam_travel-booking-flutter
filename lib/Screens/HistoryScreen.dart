@@ -103,6 +103,35 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   ),
                 ),
                 Padding(
+                  padding: const EdgeInsets.only(
+                      top: 0, bottom: 0, left: 20.0, right: 20.0),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        globals.orders[index].date != null
+                            ? "Ngày khởi hành: ${globals.orders[index].date
+                            .substring(0, 10)}"
+                            :""
+                        ,
+                        style: new TextStyle(fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
+                      ),
+                      Spacer(),
+                      Text(
+                        globals.orders[index].place != null
+                            ? "Nơi khởi hành: ${globals.orders[index].place
+                            .substring(0, 10)}"
+                            :""
+                        ,
+                        style: new TextStyle(fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
                   padding: const EdgeInsets.only(top: 4.0, bottom: 10.0),
                   child: Row(children: <Widget>[
                     Spacer(),
