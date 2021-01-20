@@ -64,14 +64,12 @@ class _PostScreenState extends State<PostScreen> {
   List<Post> posts;
   void load() {
     setState(() {
-      images[0]=ImageEntities(id:5,image: "hello");
     });
   }
   ProgressDialog _progressDialog;
   @override
   void initState() {
     super.initState();
-    load();
     Api.getPosts().then((value) {
       setState(() {
         posts = value;
