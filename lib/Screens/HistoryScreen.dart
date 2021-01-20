@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/Components/CustomAppBar.dart';
@@ -32,6 +33,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
         child: Text("Vui lòng đăng nhập để sử dụng chức năng này"),
       );
     else
+      if(globals.orders==null){
+        return Scaffold(
+          backgroundColor: Colors.white,
+          body: Center(child: CircularProgressIndicator()),
+        );
+      }
+      else
       return Scaffold(
           appBar: CustomAppBar(context, "Lịch sử đặt tour", false),
           body: Container(
@@ -72,15 +80,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 Padding(
                   padding: const EdgeInsets.only(
                       top: 10.0, bottom: 4.0, left: 20.0),
-                  child: Row(children: <Widget>[
-                    Text(
-                      globals.orders[index] == null ? 'Loading...' : globals
-                          .orders[index].tourName,
-                      style: new TextStyle(
-                          fontSize: 20.0, fontWeight: FontWeight.bold),
-                    ),
-                    Spacer(),
-                  ]),
+                  child: AutoSizeText(
+                    globals.orders[index] == null ? 'Loading...' : globals
+                        .orders[index].tourName,
+                    style: new TextStyle(
+                        fontSize: 20.0, fontWeight: FontWeight.bold),
+                    maxLines: 3,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(
@@ -95,7 +101,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
                         ,
                         style: new TextStyle(fontSize: 10,
-                            fontWeight: FontWeight.bold,
+
                             color: Colors.black),
                       ),
                       Spacer(),
@@ -104,37 +110,39 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(
-                      top: 0, bottom: 0, left: 20.0, right: 20.0),
+                      top: 10, bottom: 0, left: 20.0, right: 20.0),
                   child: Row(
                     children: <Widget>[
+                      Text("Ngày khởi hành: "),
                       Text(
                         globals.orders[index].date != null
-                            ? "Ngày khởi hành: ${globals.orders[index].date
+                            ? "${globals.orders[index].date
                             .substring(0, 10)}"
                             :""
                         ,
-                        style: new TextStyle(fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
+                        style: new TextStyle(
+
+                            color: Colors.red),
                       ),
                       Spacer(),
-                      Text(
-                        globals.orders[index].place != null
-                            ? "Nơi khởi hành: ${globals.orders[index].place
-                            .substring(0, 10)}"
-                            :""
-                        ,
-                        style: new TextStyle(fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
-                      ),
+
                     ],
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 4.0, bottom: 10.0),
+                  padding: const EdgeInsets.only(
+                      top: 10, bottom: 0, left: 20.0, right: 20.0),
                   child: Row(children: <Widget>[
-                    Spacer(),
+                    Text("Nơi Khởi hành: "),
+                    Text(
+                      globals.orders[index].place != null
+                          ? "${globals.orders[index].place
+                          .substring(0, 10)}"
+                          :""
+                      ,
+                      style: new TextStyle(
+                          color: Colors.red),
+                    ),
                   ]),
                 ),
                 Padding(

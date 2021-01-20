@@ -131,9 +131,10 @@ class _MyAppState extends State<AccountScreen> {
               ),
               Divider(),
               GestureDetector(
-                onTap: (){
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => (HistoryScreen())));
+                onTap: () {
+                  if (globals.isLoggedIn)
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => (HistoryScreen())));
                 },
                 child: Row(
                   children: [
@@ -208,9 +209,9 @@ class _MyAppState extends State<AccountScreen> {
   Widget _loginButton() {
     return GestureDetector(
       onTap: () {
-        if (globals.isLoggedIn){
+        if (globals.isLoggedIn) {
           _logout();
-        }else
+        } else
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => LoginScreen(
                     previousContext: context,
@@ -239,10 +240,12 @@ class _MyAppState extends State<AccountScreen> {
       ),
     );
   }
-  void _logout(){
-    globals.loginResponse=null;
-    globals.isLoggedIn=false;
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MainScreen()));
+
+  void _logout() {
+    globals.loginResponse = null;
+    globals.isLoggedIn = false;
+    Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(builder: (context) => MainScreen()));
   }
 }
 
@@ -331,5 +334,4 @@ class CustomDialog extends StatelessWidget {
       ],
     );
   }
-
 }

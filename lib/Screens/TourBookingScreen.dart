@@ -386,7 +386,7 @@ class _TourBookingState extends State<TourBookingScreen> {
       }
     }
     Contact contact = new Contact(
-        name: _name, email: _email, phone: _phone, orderDetailRequests: list,idTour: 100000,
+        name: _name, email: _email, phone: _phone, orderDetailRequests: list,idTour: tour.id,
       idUser: idUser,id: 0,idCardNumber: "0"
     );
     Api.order(contact).then((value) {

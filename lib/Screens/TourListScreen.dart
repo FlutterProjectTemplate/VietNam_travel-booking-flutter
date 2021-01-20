@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +13,7 @@ import 'dart:math' as math;
 import '../Utils/Constants.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:http/http.dart' as http;
+
 class Trip {
   final String title;
   final DateTime startDate;
@@ -19,13 +21,16 @@ class Trip {
   final double budget;
   final String travelType;
   final String imgUrl;
-  Trip(this.title, this.startDate, this.endDate, this.budget, this.travelType,this.imgUrl);
+
+  Trip(this.title, this.startDate, this.endDate, this.budget, this.travelType,
+      this.imgUrl);
 }
 
 class TourListScreen extends StatefulWidget {
   final String searchKey;
 
-  TourListScreen(@required this.searchKey) ;
+  TourListScreen(@required this.searchKey);
+
   @override
   _TourListScreenState createState() => _TourListScreenState();
 }
@@ -37,17 +42,15 @@ class _TourListScreenState extends State<TourListScreen> {
 
   Tour tour;
 
-
   void search(String searchKey) {
-    SearchRequest searchRequest =
-    new SearchRequest(endPlace: searchKey);
-     Api.search(searchRequest).then((tour){
-       setState(() {
-         Tours=tour;
-       });
+    SearchRequest searchRequest = new SearchRequest(endPlace: searchKey);
+    Api.search(searchRequest).then((tour) {
+      setState(() {
+        Tours = tour;
+      });
     });
-      //   dialogContent(context, e.toString().substring(11));
-    }
+    //   dialogContent(context, e.toString().substring(11));
+  }
 
   @override
   void initState() {
@@ -65,7 +68,7 @@ class _TourListScreenState extends State<TourListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List items = getDummyList(Tours==null? 0 : Tours.length);
+    List items = getDummyList(Tours == null ? 0 : Tours.length);
     return Scaffold(
       appBar: AppBar(
         title: Container(
@@ -84,7 +87,6 @@ class _TourListScreenState extends State<TourListScreen> {
                         border: InputBorder.none,
                         hintText: "Bạn cần tìm gì",
                         hintStyle: TextStyle(color: Colors.white),
-
                       ),
                       onTap: () {
                         Navigator.push(
@@ -110,7 +112,6 @@ class _TourListScreenState extends State<TourListScreen> {
           child: ListView.builder(
               itemCount: items.length,
               itemBuilder: (context, index) => buildTripCard(context, index))),
-
     );
   }
 
@@ -130,35 +131,44 @@ class _TourListScreenState extends State<TourListScreen> {
           },
           child: Padding(
             padding: const EdgeInsets.all(0),
-            child: Column(
+            child: Wrap(
+              //crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Container(
                   decoration: ShapeDecoration(
                       image: DecorationImage(
-                        image: NetworkImage(tour==null? 'Loading...' : tour.imageEntities[0].image), fit: BoxFit.fill,
+                        image: NetworkImage(tour == null
+                            ? 'Loading...'
+                            : tour.imageEntities[0].image),
+                        fit: BoxFit.fill,
                       ),
                       shape: RoundedRectangleBorder()),
                   width: double.maxFinite,
                   height: 200,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 10.0, bottom: 4.0,left: 20.0),
-                  child: Row(children: <Widget>[
-                    Text(
-                      tour==null? 'Loading...' : tour.name,
-                      style: new TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold),
-                    ),
-                    Spacer(),
-                  ]),
+                  padding: const EdgeInsets.only(
+                      top: 10.0, bottom: 4.0, left: 20.0, right: 20.0),
+                  child: AutoSizeText(
+                    tour == null ? 'Loading...' : tour.name,
+                    style: new TextStyle(
+                        fontSize: 20.0, fontWeight: FontWeight.bold),
+                    maxLines: 3,
+                  ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 7.0, bottom: 5.0, left: 20.0),
+                  padding:
+                      const EdgeInsets.only(top: 7.0, bottom: 5.0, left: 20.0),
                   child: Row(children: <Widget>[
-                    Icon(Icons.star, size: 15.0, color: Colors.orangeAccent,),
+                    Icon(
+                      Icons.star,
+                      size: 15.0,
+                      color: Colors.orangeAccent,
+                    ),
                     Text(
                       "5.0",
-                      style: new TextStyle(fontSize: 15.0,color: Colors.orangeAccent ),
-
+                      style: new TextStyle(
+                          fontSize: 15.0, color: Colors.orangeAccent),
                     ),
                     Spacer(),
                   ]),
@@ -170,18 +180,24 @@ class _TourListScreenState extends State<TourListScreen> {
                   ]),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 4.0, bottom: 20.0, left: 20.0, right: 20.0),
+                  padding: const EdgeInsets.only(
+                      top: 4.0, bottom: 20.0, left: 20.0, right: 20.0),
                   child: Row(
                     children: <Widget>[
                       Text(
-                        "${oCcy.format(tour==null? 'Loading...' : tour.priceEntities[0].price)}",
-                        style: new TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold,color: Colors.redAccent),
+                        "${oCcy.format(tour == null ? 'Loading...' : tour.priceEntities[0].price)}",
+                        style: new TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.redAccent),
                       ),
                       Spacer(),
-                      Icon(Icons.event_available, size: 15.0 ,color: Colors.green),
+                      Icon(Icons.event_available,
+                          size: 15.0, color: Colors.green),
                       Text(
                         "Có thể đặt từ hôm nay",
-                        style: new TextStyle(fontSize: 10.0,color: Colors.green),
+                        style:
+                            new TextStyle(fontSize: 10.0, color: Colors.green),
                       ),
                     ],
                   ),
@@ -191,7 +207,6 @@ class _TourListScreenState extends State<TourListScreen> {
           ),
         ),
         margin: const EdgeInsets.all(20.0),
-
       ),
     );
   }
