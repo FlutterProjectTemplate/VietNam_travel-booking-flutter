@@ -75,7 +75,7 @@ class OrderResponse {
   final String urlImage;
   final Contact contact;
   final String orderDate;
-  final Date date;
+  final String date;
   final String place;
   OrderResponse(
       {this.id,this.orderDate,
