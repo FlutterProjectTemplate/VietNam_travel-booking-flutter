@@ -45,7 +45,7 @@ class _CommentScreenState extends State<CommentScreen> {
               child: Image(
                 height: 50.0,
                 width: 50.0,
-                image: NetworkImage(post==null? 'Loading...' : post.imageEntities[0].image),
+                image: AssetImage("images/user.png"),
                 fit: BoxFit.cover,
               ),
             ),
@@ -128,7 +128,7 @@ class _CommentScreenState extends State<CommentScreen> {
                                         height: 50.0,
                                         width: 50.0,
                                         image: AssetImage(
-                                            "images/04.jpg"),
+                                            "images/user.png"),
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -159,7 +159,7 @@ class _CommentScreenState extends State<CommentScreen> {
                         ),
                         InkWell(
                           onDoubleTap: () => print('Like post'),
-                          child: Container(
+                          child: post==null||post.imageEntities[0].image==null ? Text("") : Container(
                             margin: EdgeInsets.all(10.0),
                             width: double.infinity,
                             height: 250.0,
@@ -173,7 +173,7 @@ class _CommentScreenState extends State<CommentScreen> {
                                 ),
                               ],
                               image: DecorationImage(
-                                image: NetworkImage("${post==null? 'Loading...' : post.imageEntities[0].image}"),
+                                image: NetworkImage("${post==null||post.imageEntities[0].image==null? 'Loading...' : post.imageEntities[0].image}"),
                                 fit: BoxFit.fitWidth,
                               ),
                             ),
@@ -315,7 +315,7 @@ class _CommentScreenState extends State<CommentScreen> {
                       child: Image(
                         height: 48.0,
                         width: 48.0,
-                        image: NetworkImage("${post==null? 'Loading...' : post.imageEntities[0].image}"),
+                        image: AssetImage("images/user.png"),
                         fit: BoxFit.cover,
                       ),
                     ),

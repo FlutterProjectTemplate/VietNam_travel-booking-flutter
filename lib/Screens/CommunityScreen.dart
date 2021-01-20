@@ -118,10 +118,20 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       onPressed: () => print('More'),
                     ),
                   ),
-                  Container(
-                    margin: const EdgeInsets.only(right: 250.0, top: 20),
-                    child: Text(
-                      "${post.content == null ? '' : post.content}",
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CommentScreen(post.id),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 250.0, top: 20),
+                      child: Text(
+                        "${post.content == null ? '' : post.content}",
+                      ),
                     ),
                   ),
                  _getImage(post),
@@ -243,7 +253,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                 Row(
                   children: <Widget>[
                     CircleAvatar(
-                      backgroundImage: AssetImage("images/04.jpg"),
+                      backgroundImage: AssetImage("images/user.png"),
                     ),
                     SizedBox(width: 10.0),
                     Text(
