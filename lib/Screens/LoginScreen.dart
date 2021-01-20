@@ -190,7 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Padding(
           padding: const EdgeInsets.only(left: 10.0),
           child: Text(
-            "Username",
+            "Tài khoản",
             style: TextStyle(color: Colors.grey, fontSize: 16.0),
           ),
         ),

@@ -146,7 +146,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         Padding(
           padding: const EdgeInsets.only(left: 10.0),
           child: Text(
-            "username",
+            "Tên tài khoản",
             style: TextStyle(color: Colors.grey, fontSize: 16.0),
           ),
         ),

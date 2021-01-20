@@ -36,9 +36,9 @@ class _CommunityScreenState extends State<CommunityScreen> {
                 Expanded(
                   child: SizedBox(
                     height: 200.0,
-                    child: globals.tours != null
+                    child: globals.posts != null
                         ? ListView.builder(
-                      itemCount: 20,
+                      itemCount: globals.posts.length,
                       itemBuilder: (BuildContext context, int index) =>
                          // Text(index.toString()),
                            CardPost(context, index),

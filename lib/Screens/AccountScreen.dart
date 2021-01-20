@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Models/LoginResponse.dart';
 import 'package:mobile/Screens/AboutScreen.dart';
+import 'package:mobile/Screens/HistoryScreen.dart';
 import 'package:mobile/Screens/LoginScreen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:mobile/globals.dart' as globals;
@@ -129,20 +130,26 @@ class _MyAppState extends State<AccountScreen> {
                 ],
               ),
               Divider(),
-              Row(
-                children: [
-                  Icon(Icons.history),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Text(
-                    "Lịch sử đặt tour",
-                    style: TextStyle(
-                        decoration: TextDecoration.none,
-                        color: Colors.black,
-                        fontSize: 16.0),
-                  ),
-                ],
+              GestureDetector(
+                onTap: (){
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => (HistoryScreen())));
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.history),
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Text(
+                      "Lịch sử đặt tour",
+                      style: TextStyle(
+                          decoration: TextDecoration.none,
+                          color: Colors.black,
+                          fontSize: 16.0),
+                    ),
+                  ],
+                ),
               ),
               Divider(),
               GestureDetector(

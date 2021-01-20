@@ -1,16 +1,19 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/Components/CustomAppBar.dart';
+import 'package:mobile/Models/Order.dart';
 import 'package:mobile/Models/Price.dart';
 import 'package:mobile/Models/Tour.dart';
 import 'package:mobile/Network/Api.dart';
 import 'package:mobile/Screens/PaymentScreen.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:progress_dialog/progress_dialog.dart';
+import 'package:mobile/globals.dart' as globals;
 class TourBookingScreen extends StatefulWidget {
   final Tour tour;
 
@@ -30,7 +33,9 @@ class _TourBookingState extends State<TourBookingScreen> {
   String _email;
   String _address;
   String _phone;
+  ProgressDialog _progressDialog;
   _TourBookingState(this.tour);
+
 
   @override
   void dispose() {
@@ -48,6 +53,7 @@ class _TourBookingState extends State<TourBookingScreen> {
   @override
   void initState() {
     super.initState();
+
     for (int i = 0; i < tour.priceEntities.length; i++) {
       listPrice[i] = tour.priceEntities[i].price;
     }
@@ -55,6 +61,21 @@ class _TourBookingState extends State<TourBookingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _progressDialog = new ProgressDialog(context);
+    _progressDialog.style(
+        message: 'Vui lòng chờ...',
+        borderRadius: 10.0,
+        backgroundColor: Colors.white,
+        progressWidget: CircularProgressIndicator(),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progress: 0.0,
+        maxProgress: 100.0,
+        progressTextStyle: TextStyle(
+            color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
+        messageTextStyle: TextStyle(
+            color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600));
+
     return Scaffold(
       appBar: CustomAppBar(context, "Đặt tour", true),
       body: SingleChildScrollView(
@@ -96,6 +117,9 @@ class _TourBookingState extends State<TourBookingScreen> {
           height: 10,
         ),
         TextField(
+          onChanged: (text) {
+            _name = text;
+          },
           decoration: InputDecoration(
               labelText: "Họ tên",
               border: OutlineInputBorder(
@@ -105,6 +129,9 @@ class _TourBookingState extends State<TourBookingScreen> {
           height: 10,
         ),
         TextField(
+          onChanged: (text) {
+            _email = text;
+          },
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
               labelText: "Email",
@@ -115,6 +142,9 @@ class _TourBookingState extends State<TourBookingScreen> {
           height: 10,
         ),
         TextField(
+          onChanged: (text) {
+            _address = text;
+          },
           decoration: InputDecoration(
               labelText: "Địa chỉ",
               border: OutlineInputBorder(
@@ -124,6 +154,9 @@ class _TourBookingState extends State<TourBookingScreen> {
           height: 10,
         ),
         TextField(
+          onChanged: (text) {
+            _phone = text;
+          },
           keyboardType: TextInputType.phone,
           decoration: InputDecoration(
               labelText: "Số điện thoại",
@@ -286,12 +319,10 @@ class _TourBookingState extends State<TourBookingScreen> {
               colors: [Color(0xfffbb448), Color(0xfff7892b)])),
       child: new GestureDetector(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => PaymentScreen(),
-            ),
-          );
+          if (_isValidationField()) {
+            _order();
+
+          }
         },
         child: Text(
           'Đặt ngay',
@@ -311,5 +342,133 @@ class _TourBookingState extends State<TourBookingScreen> {
       }
       _totalPrice = t;
     });
+  }
+
+  bool _isValidationField() {
+    if (_name == "" ||
+        _name == null ||
+        _phone == "" ||
+        _phone == null ||
+        _address == "" ||
+        _address == null ||
+        _email == "" ||
+        _email == null ||
+        _totalNumberOfPeople == 0) {
+      Fluttertoast.showToast(msg: "Vui lòng nghập đầy đủ dữ liệu");
+      return false;
+    }
+    // if (_password != _confirmPassword) {
+    //   Fluttertoast.showToast(msg: "Mật khẩu không khớp");
+    //   return false;
+    // }
+    // if (_password.length <= 6) {
+    //   Fluttertoast.showToast(msg: "Vui lòng nhập mật khẩu hơn 6 ký tự");
+    //   return false;
+    // }
+    return true;
+  }
+
+  void _order() {
+    _progressDialog.show();
+    OrderDetail orderDetail = new OrderDetail();
+    int idUser=0;
+    if(globals.isLoggedIn)
+      idUser=globals.loginResponse.id;
+    else
+      idUser=0;
+    List<OrderDetail> list=new List();
+    for (int i = 0; i < listOrder.length; i++) {
+      if (listOrder[i] > 0) {
+        orderDetail.price = listPrice[i];
+        orderDetail.amount = listOrder[i];
+
+        list.add(orderDetail);
+      }
+    }
+    Contact contact = new Contact(
+        name: _name, email: _email, phone: _phone, orderDetailRequests: list,idTour: 100000,
+      idUser: idUser,id: 0,idCardNumber: "0"
+    );
+    Api.order(contact).then((value) {
+      _progressDialog.hide();
+      showDialog(
+        context: context,
+        builder: (BuildContext context) =>
+            AdvanceCustomAlert(message: "Thành công"),
+      );
+    }, onError: (e) {
+      _progressDialog.hide();
+      showDialog(
+        context: context,
+        builder: (BuildContext context) =>
+            AdvanceCustomAlert(message: "Thất bại"),
+      );
+    });
+  }
+}
+
+class AdvanceCustomAlert extends StatelessWidget {
+  final String message;
+
+  const AdvanceCustomAlert({Key key, this.message}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+        child: Stack(
+          overflow: Overflow.visible,
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              height: 200,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 70, 10, 10),
+                child: Column(
+                  children: [
+                    Text(
+                      'Thông báo',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: Colors.red),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      message,
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    RaisedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      color: Color(0xfff7892b),
+                      child: Text(
+                        'Okay',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+                top: -60,
+                child: CircleAvatar(
+                  backgroundColor: Colors.redAccent,
+                  radius: 60,
+                  child: Icon(
+                    Icons.assistant_photo,
+                    color: Colors.white,
+                    size: 50,
+                  ),
+                )),
+          ],
+        ));
   }
 }

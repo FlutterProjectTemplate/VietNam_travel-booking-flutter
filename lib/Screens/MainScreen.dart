@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mobile/Models/LoginResponse.dart';
 import 'package:mobile/Screens/AccountScreen.dart';
 import 'package:mobile/Screens/CommunityScreen.dart';
+import 'package:mobile/Screens/HistoryScreen.dart';
 import 'package:mobile/Screens/HomeScreen.dart';
 import 'package:mobile/Screens/PostScreen.dart';
 
@@ -44,9 +45,9 @@ class _MainScreenState extends State<MainScreen> {
         break;
       case 1:
         return CommunityScreen();
+      // case 2:
+      //   return HistoryScreen();
       case 2:
-        return TourListScreen(null);
-      case 3:
         return AccountScreen();
         break;
       default:
@@ -77,10 +78,10 @@ class _MainScreenState extends State<MainScreen> {
             title: Text('Cộng đồng'),
             icon: Icon(Icons.public),
           ),
-          BottomNavigationBarItem(
-            title: Text('Yêu thích'),
-            icon: Icon(Icons.favorite),
-          ),
+          // BottomNavigationBarItem(
+          //   title: Text('Lịch sử'),
+          //   icon: Icon(Icons.favorite),
+          // ),
           BottomNavigationBarItem(
             title: Text('Tài khoản'),
             icon: Icon(Icons.account_circle),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mobile/Screens/SplashScreen.dart';
 import 'globals.dart' as globals;
 void main() {
-  globals.isLoggedIn = false;
   runApp(MyApp());
 }
 
