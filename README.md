@@ -136,6 +136,8 @@
 
 + Nền tải triển khai: Heroku
 
++ Link: https://travelbooking4uit.herokuapp.com/swagger-ui.html
+
 -Database: MySQL
 
 -Diagram:
