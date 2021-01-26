@@ -24,7 +24,7 @@
 
 1. [Thư viện và công nghệ](#thư-viện-và-công-nghệ)
 
-1. [Backend / Database / Diagram](#backend-/-Database-/-Diagram)
+1. [Backend / Database / Diagram](#backend-/-database-/-diagram)
 
 1. [Tác giả](#tác-giả)
 
