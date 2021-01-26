@@ -41,7 +41,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       itemCount: globals.posts.length,
                       itemBuilder: (BuildContext context, int index) =>
                          // Text(index.toString()),
-                           CardPost(context, index),
+                           CardPost(context, globals.posts.length- index-1),
                     )
                         : Center(child: CircularProgressIndicator()),
                   ),

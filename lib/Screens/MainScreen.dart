@@ -7,7 +7,7 @@ import 'package:mobile/Screens/CommunityScreen.dart';
 import 'package:mobile/Screens/HistoryScreen.dart';
 import 'package:mobile/Screens/HomeScreen.dart';
 import 'package:mobile/Screens/PostScreen.dart';
-
+import 'package:mobile/globals.dart' as globals;
 import 'TourListScreen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -23,10 +23,11 @@ class _MainScreenState extends State<MainScreen> {
   int _lastSelectedIndex = -1;
   final LoginResponse loginResponse;
 
-  _MainScreenState({this.loginResponse});
+  _MainScreenState( {this.loginResponse});
   void _onItemTapped(int index) {
     if (index != _lastSelectedIndex) {
       setState(() {
+        globals.isCommunity=false;
         _selectedIndex = index;
         _lastSelectedIndex = _selectedIndex;
         // if (_selectedIndex != _lastSelectedIndex) {
@@ -54,7 +55,13 @@ class _MainScreenState extends State<MainScreen> {
         return HomeScreen();
     }
   }
-
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if(globals.isCommunity)
+      _selectedIndex=1;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

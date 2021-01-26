@@ -2,12 +2,14 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/Models/Image.dart';
 import 'package:mobile/Models/Post.dart';
 import 'package:mobile/Models/PostRequest.dart';
 import 'package:mobile/Network/Api.dart';
 import 'package:mobile/Screens/CommunityScreen.dart';
+import 'package:mobile/Screens/MainScreen.dart';
 import 'package:mobile/globals.dart' as globals;
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -80,6 +82,20 @@ class _PostScreenState extends State<PostScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _progressDialog = new ProgressDialog(context);
+    _progressDialog.style(
+        message: 'Vui lòng chờ...',
+        borderRadius: 10.0,
+        backgroundColor: Colors.white,
+        progressWidget: CircularProgressIndicator(),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progress: 0.0,
+        maxProgress: 100.0,
+        progressTextStyle: TextStyle(
+            color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
+        messageTextStyle: TextStyle(
+            color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600));
     return MaterialApp(
         title: "Anime App",
         theme: ThemeData(fontFamily: "Open Sans"),
@@ -222,6 +238,7 @@ class _PostScreenState extends State<PostScreen> {
     );
   }
   void post() {
+    _progressDialog.show();
     final String requestBody = json.encoder.convert(images);
 
     var now = new DateTime.now();
@@ -233,7 +250,8 @@ class _PostScreenState extends State<PostScreen> {
     Api.post(postRequest).then((value) {
       _progressDialog.hide();
       // Fluttertoast.showToast(msg: value.name);
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => CommunityScreen()));
+      globals.isCommunity=true;
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MainScreen()));
     }, onError: (e) {
       _progressDialog.hide();
       showDialog(
