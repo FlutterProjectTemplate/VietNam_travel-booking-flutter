@@ -29,7 +29,7 @@ class Trip {
 class TourListScreen extends StatefulWidget {
   final String searchKey;
 
-  TourListScreen(@required this.searchKey);
+  TourListScreen(this.searchKey);
 
   @override
   _TourListScreenState createState() => _TourListScreenState();

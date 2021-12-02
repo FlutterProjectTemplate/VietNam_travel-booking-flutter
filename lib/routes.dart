@@ -17,9 +17,9 @@ import 'package:mobile/Screens/TourListScreen.dart';
 final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
     "/": (context) =>HomeScreen(),
     "/account": (context) =>AccountScreen(),
-    "/comment": (context) =>CommentScreen(),
+    "/comment": (context) =>CommentScreen(0),
     "/community": (context) =>CommunityScreen(),
-    "/detailed-tour-screen": (context) =>DetailedTourScreen(),
+    "/detailed-tour-screen": (context) =>DetailedTourScreen(0),
     "/favourite": (context) =>FavouriteScreen(),
     "/history": (context) =>HistoryScreen(),
     "/home": (context) =>HomeScreen(),
@@ -28,6 +28,6 @@ final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
     "/profile": (context) =>ProfileScreen(),
     "/search": (context) =>SearchScreen(),
     "/sign-up": (context) =>SignUpScreen(),
-    "/tour-booking": (context) =>TourBookingScreen(),
-    "/tour-list": (context) =>TourListScreen(),
+    "/tour-booking": (context) =>TourBookingScreen(null),
+    "/tour-list": (context) =>TourListScreen(null),
 };

@@ -24,7 +24,7 @@ Color mSecondaryColor = Color(0xFFfff2f3);
 class DetailedTourScreen extends StatefulWidget {
   final int tourId;
 
-  DetailedTourScreen(@required this.tourId);
+  DetailedTourScreen(this.tourId);
 
   @override
   _DetailedTourScreenState createState() => _DetailedTourScreenState();
@@ -67,21 +67,27 @@ class _DetailedTourScreenState extends State<DetailedTourScreen> {
                 height: 36,
               ),
               About(tour),
-              Padding(padding: EdgeInsets.only(right: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text("Yêu thích",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.red),),
-                  IconButton(
-                    alignment: Alignment.center,
-                    color: Colors.red,
-                    icon: Icon(Icons.favorite_border),
-                    onPressed: () {
-                      setState(() {});
-                    },
-                  ),
-                ],
-              ),),
+              Padding(
+                padding: EdgeInsets.only(right: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "Yêu thích",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.red),
+                    ),
+                    IconButton(
+                      alignment: Alignment.center,
+                      color: Colors.red,
+                      icon: Icon(Icons.favorite_border),
+                      onPressed: () {
+                        setState(() {});
+                      },
+                    ),
+                  ],
+                ),
+              ),
               // Attrabute(tour),
               BookNowButton(tour),
             ],
@@ -256,18 +262,19 @@ class Attrabute extends StatelessWidget {
           AttrabuteItem(
             iconUrl: 'images/mark.svg',
             isSelect: true,
+            tour: null,
           ),
           AttrabuteItem(
-            iconUrl: 'images/compass.svg',
+            iconUrl: 'images/compass.svg', tour: null,
           ),
           AttrabuteItem(
-            iconUrl: 'images/hotel.svg',
+            iconUrl: 'images/hotel.svg', tour: null,
           ),
           AttrabuteItem(
-            iconUrl: 'images/travel.svg',
+            iconUrl: 'images/travel.svg', tour: null,
           ),
           AttrabuteItem(
-            iconUrl: 'images/share.svg',
+            iconUrl: 'images/share.svg', tour: null,
           )
         ],
       ),
@@ -419,8 +426,7 @@ class ReadMoreTextState extends State<ReadMoreText> {
     final textScaleFactor =
         widget.textScaleFactor ?? MediaQuery.textScaleFactorOf(context);
     final overflow = defaultTextStyle.overflow;
-    final locale =
-        widget.locale ?? Localizations.localeOf(context, nullOk: true);
+    final locale = widget.locale ?? Localizations.maybeLocaleOf(context);
 
     final colorClickableText =
         widget.colorClickableText ?? Theme.of(context).accentColor;

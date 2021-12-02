@@ -17,7 +17,7 @@ import 'package:mobile/globals.dart' as globals;
 class TourBookingScreen extends StatefulWidget {
   final Tour tour;
 
-  TourBookingScreen(@required this.tour);
+  TourBookingScreen(this.tour);
 
   @override
   State<StatefulWidget> createState() => _TourBookingState(tour);

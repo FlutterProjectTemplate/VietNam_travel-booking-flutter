@@ -3,6 +3,7 @@ import 'package:mobile/Screens/CommunityScreen.dart';
 import 'package:momo_vn/momo_vn.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:async';
+
 class PaymentScreen extends StatefulWidget {
   @override
   _PaymentScreenState createState() => _PaymentScreenState();
@@ -20,26 +21,26 @@ class _PaymentScreenState extends State<PaymentScreen> {
     _momoPay.on(MomoVn.EVENT_PAYMENT_ERROR, _handlePaymentError);
     initPlatformState();
   }
+
   Future<void> initPlatformState() async {
     if (!mounted) return;
-    setState(() {
-    });
+    setState(() {});
   }
+
   MomoPaymentInfo options = MomoPaymentInfo(
-      merchantname: "Tên đối tác",
-      merchantcode: 'Mã đối tác',
+      merchantName: "Tên đối tác",
+      merchantCode: 'Mã đối tác',
       appScheme: "1221212",
       amount: 6000000000,
       orderId: '12321312',
       orderLabel: 'Label để hiển thị Mã giao dịch',
-      merchantnamelabel: "Tiêu đề tên cửa hàng",
+      merchantNameLabel: "Tiêu đề tên cửa hàng",
       fee: 0,
       description: 'Mô tả chi tiết',
       username: 'Định danh user (id/email/...)',
       partner: 'merchant',
       extra: "{\"key1\":\"value1\",\"key2\":\"value2\"}",
-      isTestMode: true
-  );
+      isTestMode: true, partnerCode: '');
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -60,20 +61,19 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 child: Text('DEMO PAYMENT WITH MOMO.VN'),
                 onPressed: () async {
                   MomoPaymentInfo options = MomoPaymentInfo(
-                      merchantname: "merchantname",
+                      merchantName: "merchantname",
                       appScheme: "momoxxxx",
-                      merchantcode: 'MOMOxxx',
+                      merchantCode: 'MOMOxxx',
                       amount: 60000,
                       orderId: '12321312',
                       orderLabel: 'Gói dịch vụ ABCD',
-                      merchantnamelabel: "TRUNG TÂM XYZ",
+                      merchantNameLabel: "TRUNG TÂM XYZ",
                       fee: 0,
                       description: 'Thanh toán công đoạn A',
                       username: '091xxxx',
                       partner: 'merchant',
                       extra: "{\"key1\":\"value1\",\"key2\":\"value2\"}",
-                      isTestMode: true
-                  );
+                      isTestMode: true, partnerCode: '');
                   try {
                     _momoPay.open(options);
                   } catch (e) {
@@ -88,31 +88,34 @@ class _PaymentScreenState extends State<PaymentScreen> {
       ),
     );
   }
+
   @override
   void dispose() {
     super.dispose();
     _momoPay.clear();
   }
+
   void _setState() {
     _payment_status = 'Đã chuyển thanh toán';
     if (_momoPaymentResult.isSuccess) {
       _payment_status += "\nTình trạng: Thành công.";
-      _payment_status += "\nSố điện thoại: " + _momoPaymentResult.phonenumber;
+      _payment_status += "\nSố điện thoại: " + _momoPaymentResult.phoneNumber;
       _payment_status += "\nExtra: " + _momoPaymentResult.extra;
       _payment_status += "\nToken: " + _momoPaymentResult.token;
-    }
-    else {
+    } else {
       _payment_status += "\nTình trạng: Thất bại.";
       _payment_status += "\nExtra: " + _momoPaymentResult.extra;
       _payment_status += "\nMã lỗi: " + _momoPaymentResult.status.toString();
     }
   }
+
   void _handlePaymentSuccess(PaymentResponse response) {
     setState(() {
       _momoPaymentResult = response;
       _setState();
     });
-    Fluttertoast.showToast(msg: "THÀNH CÔNG: " + response.phonenumber, timeInSecForIosWeb: 4);
+    Fluttertoast.showToast(
+        msg: "THÀNH CÔNG: " + response.phoneNumber, timeInSecForIosWeb: 4);
   }
 
   void _handlePaymentError(PaymentResponse response) {
@@ -120,8 +123,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       _momoPaymentResult = response;
       _setState();
     });
-    Fluttertoast.showToast(msg: "THẤT BẠI: " + response.message.toString(), timeInSecForIosWeb: 4);
+    Fluttertoast.showToast(
+        msg: "THẤT BẠI: " + response.message.toString(), timeInSecForIosWeb: 4);
   }
 }
-
-

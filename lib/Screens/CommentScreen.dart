@@ -7,7 +7,7 @@ import 'package:mobile/Network/Api.dart';
 class CommentScreen extends StatefulWidget {
   final int postId;
 
-  CommentScreen(@required this.postId) ;
+  CommentScreen(this.postId) ;
   @override
   _CommentScreenState createState() => _CommentScreenState();
 }

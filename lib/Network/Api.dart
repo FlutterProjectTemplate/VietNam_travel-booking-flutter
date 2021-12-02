@@ -20,7 +20,7 @@ class Api {
 
   static Future<LoginResponse> login(LoginRequest loginRequest) async {
     final response = await http.post(
-      '${_baseUrl}api/public/auth/login',
+        Uri.parse('${_baseUrl}api/public/auth/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -43,7 +43,7 @@ class Api {
 
   static Future<List<Tour>> search(SearchRequest searchRequest) async {
     final response = await http.post(
-      '${_baseUrl}api/public/tour/search',
+        Uri.parse('${_baseUrl}api/public/tour/search'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -68,7 +68,7 @@ class Api {
   static Future<List<Tour>> getTour() async {
     http.Response response;
     response = await http
-        .get('${_baseUrl}api/public/tour/');
+        .get(Uri.parse('${_baseUrl}api/public/tour/'));
     if (response.statusCode == 200) {
       return (json.decode(utf8.decode(response.bodyBytes)) as List)
           .map((p) => Tour.fromJson(p))
@@ -85,7 +85,7 @@ class Api {
   static Future<Tour> fetchTour(int id) async {
     http.Response response;
     response = await http
-        .get('${_baseUrl}api/public/tour/$id');
+        .get(Uri.parse('${_baseUrl}api/public/tour/$id'));
     if (response.statusCode == 200) {
       return Tour.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
     } else {
@@ -99,7 +99,7 @@ class Api {
 
   static Future<User> signUp(User user) async {
     final response = await http.post(
-      '${_baseUrl}api/public/auth/create',
+        Uri.parse('${_baseUrl}api/public/auth/create'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -121,7 +121,7 @@ class Api {
 
   static Future<bool> order(Contact contact) async {
     final response = await http.post(
-      '${_baseUrl}api/public/order/create/',
+        Uri.parse('${_baseUrl}api/public/order/create/'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         "Accept": "application/json",
@@ -144,7 +144,7 @@ class Api {
   static Future<List<OrderResponse>> getOrder() async {
     http.Response response;
     response= await http.get(
-        '${_baseUrl}api/user/tour/get-orders/',
+        Uri.parse( '${_baseUrl}api/user/tour/get-orders/'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         "Accept": "application/json",
@@ -167,7 +167,7 @@ class Api {
 
   static Future<List<Post>> getPosts() async {
     http.Response response;
-    response= await http.get('${_baseUrl}api/public/posts/');
+    response= await http.get(Uri.parse('${_baseUrl}api/public/posts/'));
     if(response.statusCode==200){
 
       return (json.decode(utf8.decode(response.bodyBytes)) as List).map((p) =>
@@ -183,7 +183,7 @@ class Api {
   }
   static Future<Post> getPost(int id) async {
     http.Response response;
-    response= await http.get('${_baseUrl}api/public/posts/$id');
+    response= await http.get(Uri.parse('${_baseUrl}api/public/posts/$id'));
     if(response.statusCode==200){
 
       return Post.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
@@ -198,7 +198,7 @@ class Api {
   }
   static Future post(PostRequest postRequest) async {
     final response = await http.post(
-      '${_baseUrl}api/user/posts/create',
+        Uri.parse('${_baseUrl}api/user/posts/create'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         "Accept": "application/json",

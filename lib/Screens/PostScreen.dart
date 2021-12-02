@@ -106,7 +106,6 @@ class _PostScreenState extends State<PostScreen> {
   Widget AddPost(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      resizeToAvoidBottomPadding: false,
       body: SingleChildScrollView(
         child: Stack(children: <Widget>[
           Container(
